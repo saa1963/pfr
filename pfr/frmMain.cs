@@ -439,7 +439,7 @@ namespace pfr
                 r.Borders[XlBordersIndex.xlEdgeRight].LineStyle = XlLineStyle.xlContinuous;
                 r = wsh.Range["A7"];
                 r.HorizontalAlignment = XlHAlign.xlHAlignLeft;
-                r.Value = "АКБ \"ТКПБ\" (ОАО) г.Тамбов";
+                r.Value = "АО БАНК \"ТКПБ\"";
                 r = wsh.Range["E7"];
                 r.Value = "'" + acc47422;
                 r = wsh.Range["A8"];
