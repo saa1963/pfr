@@ -1,0 +1,42 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="pfr.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="server" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="database" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="login" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="PathInputOutput" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="GridSplitterPos" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="SaveFilePath" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="SofitPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="Dolzh" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Президент</Value>
+    </Setting>
+    <Setting Name="Ruk" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Хаустова Г.В.</Value>
+    </Setting>
+    <Setting Name="OraIp" Type="System.String" Scope="User">
+      <Value Profile="(Default)">192.168.20.217</Value>
+    </Setting>
+    <Setting Name="OraPasword" Type="System.String" Scope="User">
+      <Value Profile="(Default)">zxc</Value>
+    </Setting>
+    <Setting Name="Norder" Type="System.String" Scope="User">
+      <Value Profile="(Default)">1</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

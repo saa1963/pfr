@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="433baa3bb7be447090fb7cc13216a553" Name="Diagram1">
+        <EntityTypeShape EntityType="pfrModel.DoSet" Width="1.5" PointX="7.125" PointY="0.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="pfrModel.OpisSet" Width="1.5" PointX="2.375" PointY="3" IsExpanded="true" />
+        <EntityTypeShape EntityType="pfrModel.Options" Width="1.5" PointX="10.5" PointY="2.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="pfrModel.SpisSet" Width="1.5" PointX="0.5" PointY="1" IsExpanded="true" />
+        <EntityTypeShape EntityType="pfrModel.TrnSet" Width="1.5" PointX="4.5" PointY="0.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="pfrModel.UserSet" Width="1.5" PointX="10" PointY="0.5" IsExpanded="true" />
+        <AssociationConnector Association="pfrModel.FK_UserSet_DoSet" ManuallyRouted="false" />
+        <AssociationConnector Association="pfrModel.FK_SpisSet_OpisSet" ManuallyRouted="false" />
+        <AssociationConnector Association="pfrModel.FK_TrnSet_SpisSet" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="pfrModel.TrnSet1" Width="1.5" PointX="7.375" PointY="5" />
+        <AssociationConnector Association="pfrModel.FK_TrnSet1_TrnSet" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

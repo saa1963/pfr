@@ -1,0 +1,501 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="pfrModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="DoSet">
+          <Key>
+            <PropertyRef Name="Kod" />
+          </Key>
+          <Property Name="Kod" Type="char" MaxLength="4" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Acc47422" Type="char" MaxLength="20" Nullable="false" />
+          <Property Name="Login" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="OpisSet">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="DateReg" Type="datetime" Nullable="false" />
+          <Property Name="NumMassiv" Type="varchar" MaxLength="25" Nullable="false" />
+          <Property Name="Mec" Type="int" Nullable="false" />
+          <Property Name="God" Type="int" Nullable="false" />
+          <Property Name="Sm" Type="money" Nullable="false" />
+          <Property Name="Kol" Type="int" Nullable="false" />
+          <Property Name="KolObrab" Type="int" Nullable="false" />
+          <Property Name="FileName" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="Xml" Type="varchar(max)" Nullable="false" />
+          <Property Name="FileName1" Type="varchar" MaxLength="100" />
+          <Property Name="Xml1" Type="varchar(max)" />
+          <Property Name="FileName2" Type="varchar" MaxLength="100" />
+          <Property Name="Xml2" Type="varchar(max)" />
+          <Property Name="FileName3" Type="varchar" MaxLength="100" />
+          <Property Name="Xml3" Type="varchar(max)" />
+        </EntityType>
+        <EntityType Name="Options">
+          <Key>
+            <PropertyRef Name="name" />
+          </Key>
+          <Property Name="name" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="val" Type="nvarchar" MaxLength="100" />
+        </EntityType>
+        <EntityType Name="SpisSet">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="OpisId" Type="int" Nullable="false" />
+          <Property Name="DateReg" Type="datetime" Nullable="false" />
+          <Property Name="NumPart" Type="int" Nullable="false" />
+          <Property Name="FileName" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="Xml" Type="varchar(max)" Nullable="false" />
+          <Property Name="mec" Type="int" Nullable="false" />
+          <Property Name="god" Type="int" Nullable="false" />
+          <Property Name="Sm" Type="money" Nullable="false" />
+          <Property Name="Kol" Type="int" Nullable="false" />
+          <Property Name="FileName1" Type="varchar" MaxLength="100" />
+          <Property Name="Xml1" Type="varchar(max)" />
+        </EntityType>
+        <EntityType Name="TrnSet">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="IdSpis" Type="int" Nullable="false" />
+          <Property Name="DateReg" Type="datetime" Nullable="false" />
+          <Property Name="DOffice" Type="char" MaxLength="4" Nullable="false" />
+          <Property Name="Acc" Type="char" MaxLength="20" Nullable="false" />
+          <Property Name="Sm" Type="money" Nullable="false" />
+          <Property Name="Fam" Type="nvarchar" MaxLength="50" />
+          <Property Name="Imya" Type="nvarchar" MaxLength="50" />
+          <Property Name="Otch" Type="nvarchar" MaxLength="50" />
+          <Property Name="NumInMassiv" Type="int" />
+          <Property Name="NumVplDelo" Type="varchar" MaxLength="10" />
+          <Property Name="KodRaiona" Type="varchar" MaxLength="15" />
+          <Property Name="StraxNum" Type="varchar" MaxLength="15" />
+          <Property Name="DFakt" Type="datetime" />
+          <Property Name="KodZachisl" Type="varchar" MaxLength="10" />
+        </EntityType>
+        <EntityType Name="TrnSet1">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="IdTrn" Type="int" Nullable="false" />
+          <Property Name="Sm" Type="money" Nullable="false" />
+          <Property Name="VidVplPZ" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="Dt1" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="Dt2" Type="varchar" MaxLength="10" Nullable="false" />
+        </EntityType>
+        <EntityType Name="UserSet">
+          <Key>
+            <PropertyRef Name="Login" />
+          </Key>
+          <Property Name="Login" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="DOffice" Type="char" MaxLength="4" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_SpisSet_OpisSet">
+          <End Role="OpisSet" Type="Self.OpisSet" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="SpisSet" Type="Self.SpisSet" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="OpisSet">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="SpisSet">
+              <PropertyRef Name="OpisId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TrnSet_SpisSet">
+          <End Role="SpisSet" Type="Self.SpisSet" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="TrnSet" Type="Self.TrnSet" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SpisSet">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="TrnSet">
+              <PropertyRef Name="IdSpis" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TrnSet1_TrnSet">
+          <End Role="TrnSet" Type="Self.TrnSet" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="TrnSet1" Type="Self.TrnSet1" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TrnSet">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="TrnSet1">
+              <PropertyRef Name="IdTrn" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UserSet_DoSet">
+          <End Role="DoSet" Type="Self.DoSet" Multiplicity="1" />
+          <End Role="UserSet" Type="Self.UserSet" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DoSet">
+              <PropertyRef Name="Kod" />
+            </Principal>
+            <Dependent Role="UserSet">
+              <PropertyRef Name="DOffice" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Function Name="GetSequenceNumber3" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="name" Type="varchar" Mode="In" />
+          <Parameter Name="def" Type="int" Mode="In" />
+          <Parameter Name="inc" Type="int" Mode="In" />
+          <Parameter Name="curdt" Type="datetime" Mode="In" />
+          <Parameter Name="rt" Type="int" Mode="InOut" />
+        </Function>
+        <EntityContainer Name="pfrModelStoreContainer">
+          <EntitySet Name="DoSet" EntityType="Self.DoSet" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="OpisSet" EntityType="Self.OpisSet" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Options" EntityType="Self.Options" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SpisSet" EntityType="Self.SpisSet" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TrnSet" EntityType="Self.TrnSet" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TrnSet1" EntityType="Self.TrnSet1" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UserSet" EntityType="Self.UserSet" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_SpisSet_OpisSet" Association="Self.FK_SpisSet_OpisSet">
+            <End Role="OpisSet" EntitySet="OpisSet" />
+            <End Role="SpisSet" EntitySet="SpisSet" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TrnSet_SpisSet" Association="Self.FK_TrnSet_SpisSet">
+            <End Role="SpisSet" EntitySet="SpisSet" />
+            <End Role="TrnSet" EntitySet="TrnSet" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TrnSet1_TrnSet" Association="Self.FK_TrnSet1_TrnSet">
+            <End Role="TrnSet" EntitySet="TrnSet" />
+            <End Role="TrnSet1" EntitySet="TrnSet1" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserSet_DoSet" Association="Self.FK_UserSet_DoSet">
+            <End Role="DoSet" EntitySet="DoSet" />
+            <End Role="UserSet" EntitySet="UserSet" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="pfrModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="DoSet">
+          <Key>
+            <PropertyRef Name="Kod" />
+          </Key>
+          <Property Name="Kod" Type="String" MaxLength="4" FixedLength="true" Unicode="false" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Acc47422" Type="String" MaxLength="20" FixedLength="true" Unicode="false" Nullable="false" />
+          <Property Name="Login" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="UserSet" Relationship="Self.FK_UserSet_DoSet" FromRole="DoSet" ToRole="UserSet" />
+        </EntityType>
+        <EntityType Name="OpisSet">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="DateReg" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="FileName" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Xml" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="SpisSet" Relationship="Self.FK_SpisSet_OpisSet" FromRole="OpisSet" ToRole="SpisSet" />
+          <Property Name="FileName1" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Xml1" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="FileName2" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Xml2" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="FileName3" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Xml3" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="NumMassiv" Type="String" Nullable="false" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="Mec" Type="Int32" Nullable="false" />
+          <Property Name="God" Type="Int32" Nullable="false" />
+          <Property Name="Sm" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
+          <Property Name="Kol" Type="Int32" Nullable="false" />
+          <Property Name="KolObrab" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Options">
+          <Key>
+            <PropertyRef Name="name" />
+          </Key>
+          <Property Name="name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="val" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="SpisSet">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="OpisId" Type="Int32" Nullable="false" />
+          <Property Name="DateReg" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="FileName" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Xml" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="OpisSet" Relationship="Self.FK_SpisSet_OpisSet" FromRole="SpisSet" ToRole="OpisSet" />
+          <NavigationProperty Name="TrnSet" Relationship="Self.FK_TrnSet_SpisSet" FromRole="SpisSet" ToRole="TrnSet" />
+          <Property Name="mec" Type="Int32" Nullable="false" />
+          <Property Name="god" Type="Int32" Nullable="false" />
+          <Property Name="FileName1" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Xml1" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Sm" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
+          <Property Name="Kol" Type="Int32" Nullable="false" />
+          <Property Name="NumPart" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="TrnSet">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="IdSpis" Type="Int32" Nullable="false" />
+          <Property Name="DateReg" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="DOffice" Type="String" MaxLength="4" FixedLength="true" Unicode="false" Nullable="false" />
+          <Property Name="Acc" Type="String" MaxLength="20" FixedLength="true" Unicode="false" Nullable="false" />
+          <Property Name="Sm" Type="Decimal" Precision="19" Scale="4" Nullable="false" >
+            <Documentation>
+              <Summary>Сумма к доставке</Summary>
+            </Documentation>
+          </Property>
+          <NavigationProperty Name="SpisSet" Relationship="Self.FK_TrnSet_SpisSet" FromRole="TrnSet" ToRole="SpisSet" />
+          <Property Name="Fam" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Imya" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Otch" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="NumInMassiv" Type="Int32" />
+          <Property Name="NumVplDelo" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="KodRaiona" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="StraxNum" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="DFakt" Type="DateTime" Precision="3" />
+          <Property Name="KodZachisl" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="TrnSet1" Relationship="pfrModel.FK_TrnSet1_TrnSet" FromRole="TrnSet" ToRole="TrnSet1" />
+        </EntityType>
+        <EntityType Name="UserSet">
+          <Key>
+            <PropertyRef Name="Login" />
+          </Key>
+          <Property Name="Login" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="DOffice" Type="String" MaxLength="4" FixedLength="true" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="DoSet" Relationship="Self.FK_UserSet_DoSet" FromRole="UserSet" ToRole="DoSet" />
+        </EntityType>
+        <Association Name="FK_UserSet_DoSet">
+          <End Role="DoSet" Type="Self.DoSet" Multiplicity="1" />
+          <End Role="UserSet" Type="Self.UserSet" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DoSet">
+              <PropertyRef Name="Kod" />
+            </Principal>
+            <Dependent Role="UserSet">
+              <PropertyRef Name="DOffice" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SpisSet_OpisSet">
+          <End Role="OpisSet" Type="Self.OpisSet" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="SpisSet" Type="Self.SpisSet" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="OpisSet">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="SpisSet">
+              <PropertyRef Name="OpisId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TrnSet_SpisSet">
+          <End Role="SpisSet" Type="Self.SpisSet" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="TrnSet" Type="Self.TrnSet" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SpisSet">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="TrnSet">
+              <PropertyRef Name="IdSpis" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="pfrEntities1" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="DoSet" EntityType="Self.DoSet" />
+          <EntitySet Name="OpisSet" EntityType="Self.OpisSet" />
+          <EntitySet Name="Options" EntityType="Self.Options" />
+          <EntitySet Name="SpisSet" EntityType="Self.SpisSet" />
+          <EntitySet Name="TrnSet" EntityType="Self.TrnSet" />
+          <EntitySet Name="UserSet" EntityType="Self.UserSet" />
+          <AssociationSet Name="FK_UserSet_DoSet" Association="Self.FK_UserSet_DoSet">
+            <End Role="DoSet" EntitySet="DoSet" />
+            <End Role="UserSet" EntitySet="UserSet" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SpisSet_OpisSet" Association="Self.FK_SpisSet_OpisSet">
+            <End Role="OpisSet" EntitySet="OpisSet" />
+            <End Role="SpisSet" EntitySet="SpisSet" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TrnSet_SpisSet" Association="Self.FK_TrnSet_SpisSet">
+            <End Role="SpisSet" EntitySet="SpisSet" />
+            <End Role="TrnSet" EntitySet="TrnSet" />
+          </AssociationSet>
+          <EntitySet Name="TrnSet1" EntityType="pfrModel.TrnSet1" />
+          <AssociationSet Name="FK_TrnSet1_TrnSet" Association="pfrModel.FK_TrnSet1_TrnSet">
+            <End Role="TrnSet" EntitySet="TrnSet" />
+            <End Role="TrnSet1" EntitySet="TrnSet1" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="TrnSet1">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="IdTrn" Type="Int32" Nullable="false" />
+          <Property Name="Sm" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
+          <Property Name="VidVplPZ" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="TrnSet" Relationship="pfrModel.FK_TrnSet1_TrnSet" FromRole="TrnSet1" ToRole="TrnSet" />
+          <Property Name="Dt1" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="Dt2" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <Association Name="FK_TrnSet1_TrnSet">
+          <End Type="pfrModel.TrnSet" Role="TrnSet" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="pfrModel.TrnSet1" Role="TrnSet1" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TrnSet">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="TrnSet1">
+              <PropertyRef Name="IdTrn" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="pfrModelStoreContainer" CdmEntityContainer="pfrEntities1">
+          <EntitySetMapping Name="DoSet">
+            <EntityTypeMapping TypeName="pfrModel.DoSet">
+              <MappingFragment StoreEntitySet="DoSet">
+                <ScalarProperty Name="Kod" ColumnName="Kod" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Acc47422" ColumnName="Acc47422" />
+                <ScalarProperty Name="Login" ColumnName="Login" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="OpisSet">
+            <EntityTypeMapping TypeName="pfrModel.OpisSet">
+              <MappingFragment StoreEntitySet="OpisSet">
+                <ScalarProperty Name="KolObrab" ColumnName="KolObrab" />
+                <ScalarProperty Name="Kol" ColumnName="Kol" />
+                <ScalarProperty Name="Sm" ColumnName="Sm" />
+                <ScalarProperty Name="God" ColumnName="God" />
+                <ScalarProperty Name="Mec" ColumnName="Mec" />
+                <ScalarProperty Name="NumMassiv" ColumnName="NumMassiv" />
+                <ScalarProperty Name="Xml3" ColumnName="Xml3" />
+                <ScalarProperty Name="FileName3" ColumnName="FileName3" />
+                <ScalarProperty Name="Xml2" ColumnName="Xml2" />
+                <ScalarProperty Name="FileName2" ColumnName="FileName2" />
+                <ScalarProperty Name="Xml1" ColumnName="Xml1" />
+                <ScalarProperty Name="FileName1" ColumnName="FileName1" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="DateReg" ColumnName="DateReg" />
+                <ScalarProperty Name="FileName" ColumnName="FileName" />
+                <ScalarProperty Name="Xml" ColumnName="Xml" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Options">
+            <EntityTypeMapping TypeName="pfrModel.Options">
+              <MappingFragment StoreEntitySet="Options">
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="val" ColumnName="val" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SpisSet">
+            <EntityTypeMapping TypeName="pfrModel.SpisSet">
+              <MappingFragment StoreEntitySet="SpisSet">
+                <ScalarProperty Name="NumPart" ColumnName="NumPart" />
+                <ScalarProperty Name="Kol" ColumnName="Kol" />
+                <ScalarProperty Name="Sm" ColumnName="Sm" />
+                <ScalarProperty Name="Xml1" ColumnName="Xml1" />
+                <ScalarProperty Name="FileName1" ColumnName="FileName1" />
+                <ScalarProperty Name="god" ColumnName="god" />
+                <ScalarProperty Name="mec" ColumnName="mec" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="OpisId" ColumnName="OpisId" />
+                <ScalarProperty Name="DateReg" ColumnName="DateReg" />
+                <ScalarProperty Name="FileName" ColumnName="FileName" />
+                <ScalarProperty Name="Xml" ColumnName="Xml" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TrnSet">
+            <EntityTypeMapping TypeName="pfrModel.TrnSet">
+              <MappingFragment StoreEntitySet="TrnSet">
+                <ScalarProperty Name="KodZachisl" ColumnName="KodZachisl" />
+                <ScalarProperty Name="DFakt" ColumnName="DFakt" />
+                <ScalarProperty Name="StraxNum" ColumnName="StraxNum" />
+                <ScalarProperty Name="KodRaiona" ColumnName="KodRaiona" />
+                <ScalarProperty Name="NumVplDelo" ColumnName="NumVplDelo" />
+                <ScalarProperty Name="NumInMassiv" ColumnName="NumInMassiv" />
+                <ScalarProperty Name="Otch" ColumnName="Otch" />
+                <ScalarProperty Name="Imya" ColumnName="Imya" />
+                <ScalarProperty Name="Fam" ColumnName="Fam" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="IdSpis" ColumnName="IdSpis" />
+                <ScalarProperty Name="DateReg" ColumnName="DateReg" />
+                <ScalarProperty Name="DOffice" ColumnName="DOffice" />
+                <ScalarProperty Name="Acc" ColumnName="Acc" />
+                <ScalarProperty Name="Sm" ColumnName="Sm" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserSet">
+            <EntityTypeMapping TypeName="pfrModel.UserSet">
+              <MappingFragment StoreEntitySet="UserSet">
+                <ScalarProperty Name="Login" ColumnName="Login" />
+                <ScalarProperty Name="DOffice" ColumnName="DOffice" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TrnSet1">
+            <EntityTypeMapping TypeName="pfrModel.TrnSet1">
+              <MappingFragment StoreEntitySet="TrnSet1">
+                <ScalarProperty Name="Dt2" ColumnName="Dt2" />
+                <ScalarProperty Name="Dt1" ColumnName="Dt1" />
+                <ScalarProperty Name="VidVplPZ" ColumnName="VidVplPZ" />
+                <ScalarProperty Name="Sm" ColumnName="Sm" />
+                <ScalarProperty Name="IdTrn" ColumnName="IdTrn" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
