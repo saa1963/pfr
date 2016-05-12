@@ -70,7 +70,7 @@ namespace pfr.Xsd1 {
     [System.Xml.Serialization.XmlRootAttribute(Namespace="", IsNullable=false)]
     public partial class ЗаголовокФайла {
         
-        private decimal версияФорматаField;
+        private string версияФорматаField;
         
         private string типФайлаField;
         
@@ -79,7 +79,7 @@ namespace pfr.Xsd1 {
         private string источникДанныхField;
         
         /// <remarks/>
-        public decimal ВерсияФормата {
+        public string ВерсияФормата {
             get {
                 return this.версияФорматаField;
             }
@@ -132,7 +132,7 @@ namespace pfr.Xsd1 {
         
         private string названиеПрограммыField;
         
-        private decimal версияField;
+        private string версияField;
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(DataType="NCName")]
@@ -146,7 +146,7 @@ namespace pfr.Xsd1 {
         }
         
         /// <remarks/>
-        public decimal Версия {
+        public string Версия {
             get {
                 return this.версияField;
             }

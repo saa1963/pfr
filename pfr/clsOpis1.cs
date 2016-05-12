@@ -70,7 +70,7 @@ namespace pfr.Xsd {
     [System.Xml.Serialization.XmlRootAttribute(Namespace="", IsNullable=false)]
     public partial class ЗаголовокФайла {
         
-        private decimal версияФорматаField;
+        private string версияФорматаField;
         
         private string типФайлаField;
         
@@ -79,7 +79,7 @@ namespace pfr.Xsd {
         private string источникДанныхField;
         
         /// <remarks/>
-        public decimal ВерсияФормата {
+        public string ВерсияФормата {
             get {
                 return this.версияФорматаField;
             }
@@ -132,7 +132,7 @@ namespace pfr.Xsd {
         
         private string названиеПрограммыField;
         
-        private decimal версияField;
+        private string версияField;
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(DataType="NCName")]
@@ -146,7 +146,7 @@ namespace pfr.Xsd {
         }
         
         /// <remarks/>
-        public decimal Версия {
+        public string Версия {
             get {
                 return this.версияField;
             }
@@ -225,6 +225,8 @@ namespace pfr.Xsd {
         private string датаСоставленияField;
         
         private ТерриториальныйОрганПФР территориальныйОрганПФРField;
+
+        //private string номерБанкаField;
         
         private Банк банкField;
         
@@ -315,6 +317,18 @@ namespace pfr.Xsd {
                 this.территориальныйОрганПФРField = value;
             }
         }
+
+        //public string НомерБанка
+        //{
+        //    get
+        //    {
+        //        return this.номерБанкаField;
+        //    }
+        //    set
+        //    {
+        //        this.номерБанкаField = value;
+        //    }
+        //}
         
         /// <remarks/>
         public Банк Банк {
