@@ -290,11 +290,17 @@ namespace pfr
                                         wr.WriteElementString("НаименованиеОрганизации", "Акционерный коммерческий банк \"Тамбовкредитпромбанк\" (Открытое акционерное общество)");
                                     wr.WriteEndElement();
                                     vx = spisXml.SelectSingleNode("//НомерПлатежногоПоручения");
-                                    nav = vx.CreateNavigator();
-                                    wr.WriteNode(nav, false);
+                                    if (vx != null)
+                                    {
+                                        nav = vx.CreateNavigator();
+                                        wr.WriteNode(nav, false);
+                                    }
                                     vx = spisXml.SelectSingleNode("//ДатаПлатежногоПоручения");
-                                    nav = vx.CreateNavigator();
-                                    wr.WriteNode(nav, false);
+                                    if (vx != null)
+                                    {
+                                        nav = vx.CreateNavigator();
+                                        wr.WriteNode(nav, false);
+                                    }
                                     wr.WriteElementString("СуммаПоПлатежномуПоручению", "0.00");
                                     vx = spisXml.SelectSingleNode("//СистемныйНомерМассива");
                                     nav = vx.CreateNavigator();
