@@ -12,12 +12,12 @@ namespace pfr
     public class OracleBd
     {
         static string OraCn = String.Format(@"Data Source=(DESCRIPTION =
-        (ADDRESS = (PROTOCOL = TCP)(HOST = {0})(PORT = 1522))
+        (ADDRESS = (PROTOCOL = TCP)(HOST = {0})(PORT = {2}))
         (CONNECT_DATA =
           (SERVER = DEDICATED)
-          (SERVICE_NAME = ODBN)
+          (SERVICE_NAME = {3})
         )
-  );User ID=PFR;Password={1}", Settings.Default.OraIp, Settings.Default.OraPasword);
+  );User ID=PFR;Password={1}", Settings.Default.OraIp, Settings.Default.OraPasword, Settings.Default.OraPort, Settings.Default.OraService);
         public bool IsExistAcc(string acc)
         {
             try
