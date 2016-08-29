@@ -166,5 +166,29 @@ namespace pfr.Properties {
                 this["Norder"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1522")]
+        public string OraPort {
+            get {
+                return ((string)(this["OraPort"]));
+            }
+            set {
+                this["OraPort"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("ODBN")]
+        public string OraService {
+            get {
+                return ((string)(this["OraService"]));
+            }
+            set {
+                this["OraService"] = value;
+            }
+        }
     }
 }

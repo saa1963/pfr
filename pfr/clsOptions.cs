@@ -17,6 +17,8 @@ namespace pfr
         private string _ruk = Settings.Default.Ruk;
         private string _oraip = Settings.Default.OraIp;
         private string _orapassword = Settings.Default.OraPasword;
+        private string _oraport = Settings.Default.OraPort;
+        private string _oraservice = Settings.Default.OraService;
 
         [Category("Пути")]
         [DisplayName("Путь")]
@@ -65,6 +67,30 @@ namespace pfr
                 return _oraip;
             }
             set { _oraip = value; }
+        }
+
+        [Category("Инверсия")]
+        [DisplayName("Номер порта")]
+        [Description("Номер порта")]
+        public string OraPort
+        {
+            get
+            {
+                return _oraport;
+            }
+            set { _oraport = value; }
+        }
+
+        [Category("Инверсия")]
+        [DisplayName("Наименование сервиса")]
+        [Description("Наименование сервиса")]
+        public string OraService
+        {
+            get
+            {
+                return _oraservice;
+            }
+            set { _oraservice = value; }
         }
 
         [Category("Инверсия")]

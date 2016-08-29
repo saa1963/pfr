@@ -38,5 +38,11 @@
     <Setting Name="Norder" Type="System.String" Scope="User">
       <Value Profile="(Default)">1</Value>
     </Setting>
+    <Setting Name="OraPort" Type="System.String" Scope="User">
+      <Value Profile="(Default)">1522</Value>
+    </Setting>
+    <Setting Name="OraService" Type="System.String" Scope="User">
+      <Value Profile="(Default)">ODBN</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
