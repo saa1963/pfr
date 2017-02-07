@@ -513,5 +513,14 @@ namespace pfr
             }
             app.Visible = true;
         }
+
+        private void testToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string doffice = null;
+            if (new OracleBd().IsExistAcc("40702810000700000150", out doffice))
+            {
+                doffice = "9999";
+            }
+        }
     }
 }

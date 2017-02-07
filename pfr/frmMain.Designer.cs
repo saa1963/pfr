@@ -51,6 +51,7 @@
             this.mnuCard = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuOrders = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuOptions = new System.Windows.Forms.ToolStripMenuItem();
+            this.testToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.dgv)).BeginInit();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -168,7 +169,8 @@
             this.mnuFiles,
             this.mnuOdb,
             this.mnuPrint,
-            this.mnuOptions});
+            this.mnuOptions,
+            this.testToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(918, 24);
@@ -194,14 +196,14 @@
             // mnuXXI
             // 
             this.mnuXXI.Name = "mnuXXI";
-            this.mnuXXI.Size = new System.Drawing.Size(285, 22);
+            this.mnuXXI.Size = new System.Drawing.Size(224, 22);
             this.mnuXXI.Text = "Документы в XXI век";
             this.mnuXXI.Click += new System.EventHandler(this.mnuOdb_Click);
             // 
             // mnuSofit
             // 
             this.mnuSofit.Name = "mnuSofit";
-            this.mnuSofit.Size = new System.Drawing.Size(285, 22);
+            this.mnuSofit.Size = new System.Drawing.Size(224, 22);
             this.mnuSofit.Text = "Файлы для Софит-Эмитент";
             this.mnuSofit.Click += new System.EventHandler(this.mnuSofit_Click);
             // 
@@ -242,6 +244,14 @@
             this.mnuOptions.Size = new System.Drawing.Size(79, 20);
             this.mnuOptions.Text = "Настройки";
             this.mnuOptions.Click += new System.EventHandler(this.mnuOptions_Click);
+            // 
+            // testToolStripMenuItem
+            // 
+            this.testToolStripMenuItem.Name = "testToolStripMenuItem";
+            this.testToolStripMenuItem.Size = new System.Drawing.Size(40, 20);
+            this.testToolStripMenuItem.Text = "Test";
+            this.testToolStripMenuItem.Visible = false;
+            this.testToolStripMenuItem.Click += new System.EventHandler(this.testToolStripMenuItem_Click);
             // 
             // frmMain
             // 
@@ -286,6 +296,7 @@
         private System.Windows.Forms.ToolStripMenuItem mnuCard;
         private System.Windows.Forms.ToolStripMenuItem mnuFiles;
         private System.Windows.Forms.ToolStripMenuItem mnuOrders;
+        private System.Windows.Forms.ToolStripMenuItem testToolStripMenuItem;
     }
 }
 

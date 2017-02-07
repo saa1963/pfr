@@ -121,11 +121,7 @@ namespace pfr
                                     zch.Sm = z.СуммаКдоставке;
                                     zch.StraxNum = z.СтраховойНомер;
                                     ctx.TrnSet.Add(zch);
-                                    if (new OracleBd().IsExistAcc(z.НомерСчета))
-                                    {
-                                        doffice = z.НомерСчета.Trim().Substring(9, 4);
-                                    }
-                                    else
+                                    if (!new OracleBd().IsExistAcc(z.НомерСчета, out doffice))
                                     {
                                         doffice = "9999";
                                     }

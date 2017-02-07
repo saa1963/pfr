@@ -18,18 +18,28 @@ namespace pfr
           (SERVICE_NAME = {3})
         )
   );User ID=PFR;Password={1}", Settings.Default.OraIp, Settings.Default.OraPasword, Settings.Default.OraPort, Settings.Default.OraService);
-        public bool IsExistAcc(string acc)
+
+        public bool IsExistAcc(string acc, out string otd)
         {
+            otd = "9999";
             try
             {
                 using (OracleConnection cn =
                     new OracleConnection(OraCn))
                 {
                     cn.Open();
-                    var cmd = new OracleCommand(String.Format("select caccacc from XXI.\"acc\" where caccacc = '{0}' and caccprizn = 'О'", acc), cn);
+                    var cmd = new OracleCommand(String.Format("select iaccotd from XXI.\"acc\" where caccacc = '{0}' and caccprizn = 'О'", acc), cn);
                     using (var dr = cmd.ExecuteReader())
                     {
-                        return dr.Read();
+                        if (dr.Read())
+                        {
+                            otd = dr[0].ToString().PadLeft(4, '0');
+                            return true;
+                        }
+                        else
+                        {
+                            return false;
+                        }
                     }
                 }
             }
