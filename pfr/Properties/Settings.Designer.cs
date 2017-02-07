@@ -133,7 +133,7 @@ namespace pfr.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("192.168.20.217")]
+        [global::System.Configuration.DefaultSettingValueAttribute("192.168.20.220")]
         public string OraIp {
             get {
                 return ((string)(this["OraIp"]));

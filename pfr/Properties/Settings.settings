@@ -30,7 +30,7 @@
       <Value Profile="(Default)">Хаустова Г.В.</Value>
     </Setting>
     <Setting Name="OraIp" Type="System.String" Scope="User">
-      <Value Profile="(Default)">192.168.20.217</Value>
+      <Value Profile="(Default)">192.168.20.220</Value>
     </Setting>
     <Setting Name="OraPasword" Type="System.String" Scope="User">
       <Value Profile="(Default)">zxc</Value>
