@@ -11,7 +11,7 @@ namespace pfr
 {
     public class OracleBd
     {
-        static string OraCn = String.Format(@"Data Source=(DESCRIPTION =
+        private string OraCn = String.Format(@"Data Source=(DESCRIPTION =
         (ADDRESS = (PROTOCOL = TCP)(HOST = {0})(PORT = {2}))
         (CONNECT_DATA =
           (SERVER = DEDICATED)

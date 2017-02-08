@@ -519,7 +519,7 @@ namespace pfr
             string doffice = null;
             if (new OracleBd().IsExistAcc("40702810000700000150", out doffice))
             {
-                doffice = "9999";
+                MessageBox.Show(doffice);
             }
         }
     }
