@@ -11,13 +11,14 @@ namespace pfr
 {
     public class OracleBd
     {
-        private string OraCn = String.Format(@"Data Source=(DESCRIPTION =
-        (ADDRESS = (PROTOCOL = TCP)(HOST = {0})(PORT = {2}))
-        (CONNECT_DATA =
-          (SERVER = DEDICATED)
-          (SERVICE_NAME = {3})
-        )
-  );User ID=PFR;Password={1}", Settings.Default.OraIp, Settings.Default.OraPasword, Settings.Default.OraPort, Settings.Default.OraService);
+        //      private string OraCn = String.Format(@"Data Source=(DESCRIPTION =
+        //      (ADDRESS = (PROTOCOL = TCP)(HOST = {0})(PORT = {2}))
+        //      (CONNECT_DATA =
+        //        (SERVER = DEDICATED)
+        //        (SERVICE_NAME = {3})
+        //      )
+        //);User ID=PFR;Password={1}", Settings.Default.OraIp, Settings.Default.OraPasword, Settings.Default.OraPort, Settings.Default.OraService);
+        private string OraCn = @"Data Source=ODB;User ID=PFR;Password=zxc";
 
         public bool IsExistAcc(string acc, out string otd)
         {

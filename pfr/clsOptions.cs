@@ -57,53 +57,53 @@ namespace pfr
             set { _ruk = value; }
         }
 
-        [Category("Инверсия")]
-        [DisplayName("Ip адрес сервера")]
-        [Description("Ip адрес сервера")]
-        public string OraIp
-        {
-            get
-            {
-                return _oraip;
-            }
-            set { _oraip = value; }
-        }
+        //[Category("Инверсия")]
+        //[DisplayName("Ip адрес сервера")]
+        //[Description("Ip адрес сервера")]
+        //public string OraIp
+        //{
+        //    get
+        //    {
+        //        return _oraip;
+        //    }
+        //    set { _oraip = value; }
+        //}
 
-        [Category("Инверсия")]
-        [DisplayName("Номер порта")]
-        [Description("Номер порта")]
-        public string OraPort
-        {
-            get
-            {
-                return _oraport;
-            }
-            set { _oraport = value; }
-        }
+        //[Category("Инверсия")]
+        //[DisplayName("Номер порта")]
+        //[Description("Номер порта")]
+        //public string OraPort
+        //{
+        //    get
+        //    {
+        //        return _oraport;
+        //    }
+        //    set { _oraport = value; }
+        //}
 
-        [Category("Инверсия")]
-        [DisplayName("Наименование сервиса")]
-        [Description("Наименование сервиса")]
-        public string OraService
-        {
-            get
-            {
-                return _oraservice;
-            }
-            set { _oraservice = value; }
-        }
+        //[Category("Инверсия")]
+        //[DisplayName("Наименование сервиса")]
+        //[Description("Наименование сервиса")]
+        //public string OraService
+        //{
+        //    get
+        //    {
+        //        return _oraservice;
+        //    }
+        //    set { _oraservice = value; }
+        //}
 
-        [Category("Инверсия")]
-        [DisplayName("Пароль")]
-        [Description("Пароль")]
-        public string OraPassword
-        {
-            get
-            {
-                return _orapassword;
-            }
-            set { _orapassword = value; }
-        }
+        //[Category("Инверсия")]
+        //[DisplayName("Пароль")]
+        //[Description("Пароль")]
+        //public string OraPassword
+        //{
+        //    get
+        //    {
+        //        return _orapassword;
+        //    }
+        //    set { _orapassword = value; }
+        //}
     }
 
     class FolderEditor : System.Windows.Forms.Design.FolderNameEditor

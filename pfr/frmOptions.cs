@@ -20,10 +20,10 @@ namespace pfr
             InitializeComponent();
             opt = new clsOptions();
             opt.PathInputOutput = Settings.Default.PathInputOutput;
-            opt.OraIp = Settings.Default.OraIp;
-            opt.OraPassword = Settings.Default.OraPasword;
-            opt.OraPort = Settings.Default.OraPort;
-            opt.OraService = Settings.Default.OraService;
+            //opt.OraIp = Settings.Default.OraIp;
+            //opt.OraPassword = Settings.Default.OraPasword;
+            //opt.OraPort = Settings.Default.OraPort;
+            //opt.OraService = Settings.Default.OraService;
             opt.Dolzh = Settings.Default.Dolzh;
             opt.Ruk = Settings.Default.Ruk;
         }
@@ -37,10 +37,10 @@ namespace pfr
         private void frmOptions_FormClosing(object sender, FormClosingEventArgs e)
         {
             Settings.Default.PathInputOutput = opt.PathInputOutput;
-            Settings.Default.OraIp = opt.OraIp;
-            Settings.Default.OraPasword = opt.OraPassword;
-            Settings.Default.OraPort = opt.OraPort;
-            Settings.Default.OraService = opt.OraService;
+            //Settings.Default.OraIp = opt.OraIp;
+            //Settings.Default.OraPasword = opt.OraPassword;
+            //Settings.Default.OraPort = opt.OraPort;
+            //Settings.Default.OraService = opt.OraService;
             Settings.Default.Dolzh = opt.Dolzh;
             Settings.Default.Ruk = opt.Ruk;
             Settings.Default.Save();
