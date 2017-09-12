@@ -314,8 +314,8 @@ namespace pfr
                                     vx = spisXml.SelectSingleNode("//Год");
                                     nav = vx.CreateNavigator();
                                     wr.WriteNode(nav, false);
-                                    var smz = spis.TrnSet.Where(s => s.KodZachisl == "31").Sum(s => s.Sm);
-                                    var kolz = spis.TrnSet.Where(s => s.KodZachisl == "31").Count();
+                                    var smz = spis.TrnSet.Where(s => s.KodZachisl == "З1").Sum(s => s.Sm);
+                                    var kolz = spis.TrnSet.Where(s => s.KodZachisl == "З1").Count();
                                     var smnz = spis.TrnSet.Sum(s => s.Sm) - smz;
                                     var kolnz = spis.TrnSet.Count() - kolz;
                                     wr.WriteElementString("СуммаЗачисленоПоФилиалу", smz.ToString("F2").Replace(',', '.'));

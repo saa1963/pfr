@@ -118,7 +118,7 @@ namespace pfr
                         if (or.ExistTransaction(trn.Acc, trn.Sm, trn.DateReg.Date, trn.Id, ref dfakt))
                         {
                             trn.DFakt = dfakt;
-                            trn.KodZachisl = "31";
+                            trn.KodZachisl = "З1";
                             obr++;
                         }
                     }

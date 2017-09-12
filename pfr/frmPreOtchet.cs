@@ -16,8 +16,8 @@ namespace pfr
         List<KodNch> knch = new List<KodNch>()
         {
             new KodNch(){Kod = null, Name = "Не установлено"},
-            new KodNch(){Kod = "31", Name = "31 - Зачисление на счет, указанный в списке выплат"},
-            new KodNch(){Kod = "32", Name = "32 - Зачисление на вновь открытый счет"},
+            new KodNch(){Kod = "З1", Name = "З1 - Зачисление на счет, указанный в списке выплат"},
+            new KodNch(){Kod = "З2", Name = "З2 - Зачисление на вновь открытый счет"},
             new KodNch(){Kod = "Н31", Name = "Н31 - Незачисление на счет - отсутствие номера счета"},
             new KodNch(){Kod = "Н32", Name = "Н32 - Незачисление на счет - расхождения в ФИО"},
             new KodNch(){Kod = "Н33", Name = "Н33 - Незачисление на счет - счет закрыт"},
@@ -46,7 +46,7 @@ namespace pfr
                 {
                     o.DFakt = null;
                 }
-                else if (o.KodZachisl == "31" || o.KodZachisl == "32")
+                else if (o.KodZachisl == "З1" || o.KodZachisl == "З2")
                 {
                     o.DFakt = o.DateReg.Date;
                 }
@@ -68,12 +68,12 @@ namespace pfr
                     e.Cancel = true;
                     break;
                 }
-                else if ((o.KodZachisl == "31" || o.KodZachisl == "32") && o.DFakt == null)
+                else if ((o.KodZachisl == "З1" || o.KodZachisl == "З2") && o.DFakt == null)
                 {
                     e.Cancel = true;
                     break;
                 }
-                else if ((o.KodZachisl != "31" && o.KodZachisl != "32" && o.KodZachisl != null) && o.DFakt != null)
+                else if ((o.KodZachisl != "З1" && o.KodZachisl != "З2" && o.KodZachisl != null) && o.DFakt != null)
                 {
                     e.Cancel = true;
                     break;
@@ -111,7 +111,7 @@ namespace pfr
         {
             foreach (var o in (List<TrnSet>)bs.DataSource)
             {
-                o.KodZachisl = "31";
+                o.KodZachisl = "З1";
                 o.DFakt = o.DateReg.Date;
             }
             bs.ResetBindings(false);
