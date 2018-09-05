@@ -1,4 +1,5 @@
 ﻿using pfr.Properties;
+using pfr.Xsd1;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity.Infrastructure;
@@ -68,6 +69,17 @@ namespace pfr
                                 // Сформировать отрицательный ответ
                                 folder = clsConst.FolderBad;
                                 goto delete;
+                            }
+                            var dtPlat = new DateTime(Int32.Parse(Список.ПачкаВходящихДокументов.ВХОДЯЩАЯ_ОПИСЬ.ДатаПлатежногоПоручения.Substring(6, 4)),
+                                Int32.Parse(Список.ПачкаВходящихДокументов.ВХОДЯЩАЯ_ОПИСЬ.ДатаПлатежногоПоручения.Substring(3, 2)),
+                                Int32.Parse(Список.ПачкаВходящихДокументов.ВХОДЯЩАЯ_ОПИСЬ.ДатаПлатежногоПоручения.Substring(0, 2)));
+                            var numPlat = Int32.Parse(Список.ПачкаВходящихДокументов.ВХОДЯЩАЯ_ОПИСЬ.НомерПлатежногоПоручения);
+                            var sumPlat = Список.ПачкаВходящихДокументов.ВХОДЯЩАЯ_ОПИСЬ.ОбщаяСуммаПоМассиву;
+                            if (ExistPlat(dtPlat, numPlat, sumPlat) == 0)
+                            {
+                                MessageBox.Show(String.Format("Для файла списка {0} не найдена платежка № {1} с датой >= {2} на сумму {3}. Файлы описи и списка остаются на месте.",
+                                    new object[] { new FileInfo(ИмяФайлаСписокНаЗачисление).Name, numPlat, dtPlat, sumPlat}));
+                                throw new ExceptionNotFindPlat();
                             }
                             kolvx++;
                             Списки.Add(Список);
@@ -164,6 +176,10 @@ namespace pfr
                     MessageBox.Show("Ошибка БД, обратитесь к администратору.");
                     folder = clsConst.FolderBad;
                 }
+                catch (ExceptionNotFindPlat)
+                {
+                    continue;
+                }
             delete:
                 File.SetAttributes(ИмяФайлаОписьНаЗачисление, FileAttributes.Normal);
                 File.Copy(ИмяФайлаОписьНаЗачисление,
@@ -180,6 +196,11 @@ namespace pfr
                 }
             }
             return String.Format("Обработано {0} входящих файлов. Сформировано {1} исходящих файлов.", kolvx, kolisx);
+        }
+
+        private int ExistPlat(DateTime dtPlat, int numPlat, decimal sumPlat)
+        {
+            
         }
 
         private List<string> НайтиСпискиФайловНаЗачисление(string ИмяФайлаОписьНаЗачисление, ref pfr.Xsd.ФайлПФР o)
@@ -206,5 +227,10 @@ namespace pfr
             }
             return rt;
         }
+    }
+
+    class ExceptionNotFindPlat: Exception
+    {
+        public ExceptionNotFindPlat() : base() { }
     }
 }

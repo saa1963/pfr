@@ -16,6 +16,12 @@ namespace pfr
 {
     public class clsProcessing
     {
+        /// <summary>
+        /// Десериализация списка на зачисление
+        /// </summary>
+        /// <param name="ИмяФайлаСписокНаЗачисление">Имя файла со списком</param>
+        /// <param name="o">Возвращаемый объект</param>
+        /// <returns>Успех или нет</returns>
         public bool ОбработатьСписокНаЗачисление(string ИмяФайлаСписокНаЗачисление, ref pfr.Xsd1.ФайлПФР o)
         {
             XmlSerializer serializer = new XmlSerializer(typeof(pfr.Xsd1.ФайлПФР));

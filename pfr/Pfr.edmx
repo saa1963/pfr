@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="pfrModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="pfrModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="DoSet">
           <Key>
             <PropertyRef Name="Kod" />
@@ -58,6 +58,7 @@
           <Property Name="Kol" Type="int" Nullable="false" />
           <Property Name="FileName1" Type="varchar" MaxLength="100" />
           <Property Name="Xml1" Type="varchar(max)" />
+          <Property Name="ITrnNum" Type="int" />
         </EntityType>
         <EntityType Name="TrnSet">
           <Key>
@@ -244,6 +245,7 @@
           <Property Name="Sm" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
           <Property Name="Kol" Type="Int32" Nullable="false" />
           <Property Name="NumPart" Type="Int32" Nullable="false" />
+          <Property Name="ITrnNum" Type="Int32" />
         </EntityType>
         <EntityType Name="TrnSet">
           <Key>
@@ -419,6 +421,7 @@
           <EntitySetMapping Name="SpisSet">
             <EntityTypeMapping TypeName="pfrModel.SpisSet">
               <MappingFragment StoreEntitySet="SpisSet">
+                <ScalarProperty Name="ITrnNum" ColumnName="ITrnNum" />
                 <ScalarProperty Name="NumPart" ColumnName="NumPart" />
                 <ScalarProperty Name="Kol" ColumnName="Kol" />
                 <ScalarProperty Name="Sm" ColumnName="Sm" />
