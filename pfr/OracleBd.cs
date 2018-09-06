@@ -18,7 +18,73 @@ namespace pfr
         //        (SERVICE_NAME = {3})
         //      )
         //);User ID=PFR;Password={1}", Settings.Default.OraIp, Settings.Default.OraPasword, Settings.Default.OraPort, Settings.Default.OraService);
-        private string OraCn = @"Data Source=ODB;User ID=PFR;Password=zxc";
+
+        //private string OraCn = @"Data Source=ODB;User ID=PFR;Password=zxc";
+        private string OraCn = @"Data Source=TEST;User ID=PFR;Password=zxc";
+
+        internal bool AddVedInform(int from, int to)
+        {
+            bool rt = false;
+            try
+            {
+                using (var cn = new OracleConnection(OraCn))
+                {
+                    decimal success = -1;
+                    var cmd = new OracleCommand();
+                    cmd.Connection = cn;
+                    cmd.CommandText = "BSV.Set_Dinfo";
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                    //itnnum_in, itrnnum_out
+                    cmd.Parameters.Add("itnnum_in", OracleDbType.Decimal, System.Data.ParameterDirection.Input).Value = from;
+                    cmd.Parameters.Add("itnnum_out", OracleDbType.Decimal, System.Data.ParameterDirection.Input).Value = to;
+                    cmd.Parameters.Add("success", OracleDbType.Decimal, System.Data.ParameterDirection.ReturnValue);
+
+                    cmd.ExecuteNonQuery();
+                    success = Convert.ToDecimal(cmd.Parameters["kiekis"].Value);
+                    rt = (success == 0);
+                }
+            }
+            catch (OracleException e1)
+            {
+                MessageBox.Show(e1.Message);
+            }
+            catch (Exception e2)
+            {
+                MessageBox.Show(e2.Message);
+            }
+            return rt;
+        }
+
+        internal int ExistPlat(DateTime dtPlat, int numPlat, decimal sumPlat)
+        {
+            int rt = 0;
+            try
+            {
+                using (var cn = new OracleConnection(OraCn))
+                {
+                    cn.Open();
+                    var cmd = new OracleCommand(
+                        "select itrnnum from XXI.\"trn\" where DTRNTRAN BETWEEN :dt1 AND :dt2 AND ITRNDOCNUM = :num AND MTRNSUM = :sm", cn);
+                    cmd.Parameters.Add("dt1", OracleDbType.Date).Value = dtPlat;
+                    cmd.Parameters.Add("dt2", OracleDbType.Date).Value = dtPlat.AddDays(4);
+                    cmd.Parameters.Add("num", OracleDbType.Int64).Value = numPlat;
+                    cmd.Parameters.Add("sm", OracleDbType.Decimal).Value = sumPlat;
+                    var ob = cmd.ExecuteScalar();
+                    if (ob != null)
+                        rt = Convert.ToInt32(ob);
+                }
+            }
+            catch (OracleException e1)
+            {
+                MessageBox.Show(e1.Message);
+            }
+            catch (Exception e2)
+            {
+                MessageBox.Show(e2.Message);
+            }
+            return rt;
+        }
 
         public bool IsExistAcc(string acc, out string otd)
         {
@@ -55,7 +121,7 @@ namespace pfr
             return false;
         }
 
-        public bool ExistTransaction(string acc, decimal sm, DateTime dt, int idtrn, ref DateTime dfakt)
+        public bool ExistTransaction(string acc, decimal sm, DateTime dt, int idtrn, ref DateTime dfakt, ref int itrnnum)
         {
             try
             {
@@ -73,6 +139,7 @@ namespace pfr
                         if (dr.Read())
                         {
                             dfakt = dr.GetOracleDate(1).Value;
+                            itrnnum = Convert.ToInt32(dr.GetOracleDecimal(0).Value);
                             return true;
                         }
                         else

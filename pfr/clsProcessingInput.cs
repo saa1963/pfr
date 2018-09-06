@@ -14,34 +14,6 @@ namespace pfr
 {
     internal class clsProcessingInput
     {
-        public string DoIt1()
-        {
-            int kolisx = 0, kolvx = 0;
-            var ИменаФайловСписковОписейНаЗачисление =
-                Directory.GetFiles(Path.Combine(Settings.Default.PathInputOutput, clsConst.FolderFromPFR),
-                "PFR-???-Y-????-ORG-???-???-??????-DIS-???-DCK-?????-???-DOC-OPPF-FSB-????.XML");
-            foreach (var ИмяФайлаОписьНаЗачисление in ИменаФайловСписковОписейНаЗачисление)
-            {
-                pfr.Xsd.ФайлПФР Опись = null;
-                // возвращает null если ошибка десериализации <ИмяФайлаОписьНаЗачисление>
-                var ИменаФайловСписковНаЗачисление = НайтиСпискиФайловНаЗачисление(ИмяФайлаОписьНаЗачисление, ref Опись);
-                if (ИменаФайловСписковНаЗачисление == null)
-                {
-                    var fi = new FileInfo(ИмяФайлаОписьНаЗачисление);
-                    MessageBox.Show(String.Format(
-                        "Ошибка обработки файла описи {0}. Файл остается в папке {1} до выяснения причины. Обратитесь к администратору.",
-                        fi.Name, fi.Directory));
-                }
-                else
-                {
-                    pfr.Xsd1.ФайлПФР Список = null;
-                    //ОбработатьСпискиНаЗачисление();
-                    kolvx++;
-                }
-            }
-            return String.Format("Обработано {0} входящих файлов. Сформировано {1} исходящих файлов.", kolvx, kolisx);
-        }
-
         public string DoIt()
         {
             int kolisx = 0, kolvx = 0;
@@ -61,6 +33,7 @@ namespace pfr
                     {
                         var Списки = new List<pfr.Xsd1.ФайлПФР>();
                         pfr.Xsd1.ФайлПФР Список = null;
+                        var auxDict = new Dictionary<string, int>();
                         foreach (var ИмяФайлаСписокНаЗачисление in ИменаФайловСписковНаЗачисление)
                         {
                             if (!(new clsProcessing().ОбработатьСписокНаЗачисление(ИмяФайлаСписокНаЗачисление, ref Список)))
@@ -74,13 +47,16 @@ namespace pfr
                                 Int32.Parse(Список.ПачкаВходящихДокументов.ВХОДЯЩАЯ_ОПИСЬ.ДатаПлатежногоПоручения.Substring(3, 2)),
                                 Int32.Parse(Список.ПачкаВходящихДокументов.ВХОДЯЩАЯ_ОПИСЬ.ДатаПлатежногоПоручения.Substring(0, 2)));
                             var numPlat = Int32.Parse(Список.ПачкаВходящихДокументов.ВХОДЯЩАЯ_ОПИСЬ.НомерПлатежногоПоручения);
-                            var sumPlat = Список.ПачкаВходящихДокументов.ВХОДЯЩАЯ_ОПИСЬ.ОбщаяСуммаПоМассиву;
-                            if (ExistPlat(dtPlat, numPlat, sumPlat) == 0)
+                            var sumPlat = Список.ПачкаВходящихДокументов.ВХОДЯЩАЯ_ОПИСЬ.СуммаПоЧастиМассива;
+                            int idPlat;
+                            if ((idPlat = new OracleBd().ExistPlat(dtPlat, numPlat, sumPlat)) == 0)
                             {
-                                MessageBox.Show(String.Format("Для файла списка {0} не найдена платежка № {1} с датой >= {2} на сумму {3}. Файлы описи и списка остаются на месте.",
-                                    new object[] { new FileInfo(ИмяФайлаСписокНаЗачисление).Name, numPlat, dtPlat, sumPlat}));
+                                MessageBox.Show(String.Format("Для файла списка {0} не найдена платежка № {1} с датой между {2} и {3} на сумму {4}. " + 
+                                    "Списки по описи {5} не обработаны. Попробуйте повторно обработать их после проведения платежа в Инверсии XXI век.",
+                                    new object[] { new FileInfo(ИмяФайлаСписокНаЗачисление).Name, numPlat, dtPlat, dtPlat.AddDays(4), sumPlat, new FileInfo(ИмяФайлаОписьНаЗачисление).Name}));
                                 throw new ExceptionNotFindPlat();
                             }
+                            auxDict.Add(Список.ИмяФайла, idPlat);
                             kolvx++;
                             Списки.Add(Список);
                         }
@@ -115,6 +91,7 @@ namespace pfr
                                 s.Kol = int.Parse(Список.ПачкаВходящихДокументов.ВХОДЯЩАЯ_ОПИСЬ.КоличествоПорученийПоЧастиМассива);
                                 s.Sm = Список.ПачкаВходящихДокументов.ВХОДЯЩАЯ_ОПИСЬ.СуммаПоЧастиМассива;
                                 s.NumPart = int.Parse(Список.ПачкаВходящихДокументов.ВХОДЯЩАЯ_ОПИСЬ.НомерЧастиМассива);
+                                s.ITrnNum = auxDict[Список.ИмяФайла];
                                 ctx.SpisSet.Add(s);
                                 ctx.SaveChanges();
 
@@ -198,10 +175,7 @@ namespace pfr
             return String.Format("Обработано {0} входящих файлов. Сформировано {1} исходящих файлов.", kolvx, kolisx);
         }
 
-        private int ExistPlat(DateTime dtPlat, int numPlat, decimal sumPlat)
-        {
-            
-        }
+        
 
         private List<string> НайтиСпискиФайловНаЗачисление(string ИмяФайлаОписьНаЗачисление, ref pfr.Xsd.ФайлПФР o)
         {

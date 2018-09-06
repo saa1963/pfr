@@ -3,15 +3,18 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml.Serialization;
 
 namespace pfr
 {
     public partial class frmInputFiles : Form
     {
+        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
         BindingSource bs1 = new BindingSource();
         BindingSource bs2 = new BindingSource();
         pfrEntities1 ctx = new pfrEntities1(Utils.Current.cn);
@@ -106,6 +109,7 @@ namespace pfr
         {
             int totkol = 0, obr = 0;
             DateTime dfakt = DateTime.MinValue;
+            int itrnnum = 0;
             if (bs1.Current == null) return;
             OpisSet o = (OpisSet)bs1.Current;
             foreach (var spis in o.SpisSet)
@@ -115,8 +119,12 @@ namespace pfr
                 {
                     if (trn.KodZachisl == null)
                     {
-                        if (or.ExistTransaction(trn.Acc, trn.Sm, trn.DateReg.Date, trn.Id, ref dfakt))
+                        if (or.ExistTransaction(trn.Acc, trn.Sm, trn.DateReg.Date, trn.Id, ref dfakt, ref itrnnum))
                         {
+                            if (!or.AddVedInform(spis.ITrnNum.Value, itrnnum))
+                            {
+                                //MessageBox.Show($"Ошибка добавления ведомственной ин");
+                            }
                             trn.DFakt = dfakt;
                             trn.KodZachisl = "З1";
                             obr++;
@@ -161,6 +169,63 @@ namespace pfr
         private void tbPeriod_SelectedIndexChanged(object sender, EventArgs e)
         {
             RefreshData1();
+        }
+
+        private void mnuBindPlat_Click(object sender, EventArgs e)
+        {
+            if (bs1.Current == null) return;
+            OpisSet o = (OpisSet)bs1.Current;
+            foreach (var spis in o.SpisSet)
+            {
+                pfr.Xsd1.ФайлПФР Список = null;
+                if (ОбработатьСписокНаЗачисление(spis.Xml, ref Список))
+                {
+                    var dtPlat = new DateTime(Int32.Parse(Список.ПачкаВходящихДокументов.ВХОДЯЩАЯ_ОПИСЬ.ДатаПлатежногоПоручения.Substring(6, 4)),
+                                    Int32.Parse(Список.ПачкаВходящихДокументов.ВХОДЯЩАЯ_ОПИСЬ.ДатаПлатежногоПоручения.Substring(3, 2)),
+                                    Int32.Parse(Список.ПачкаВходящихДокументов.ВХОДЯЩАЯ_ОПИСЬ.ДатаПлатежногоПоручения.Substring(0, 2)));
+                    var numPlat = Int32.Parse(Список.ПачкаВходящихДокументов.ВХОДЯЩАЯ_ОПИСЬ.НомерПлатежногоПоручения);
+                    var sumPlat = Список.ПачкаВходящихДокументов.ВХОДЯЩАЯ_ОПИСЬ.СуммаПоЧастиМассива;
+                    int idPlat;
+                    if ((idPlat = new OracleBd().ExistPlat(dtPlat, numPlat, sumPlat)) == 0)
+                    {
+                        MessageBox.Show(String.Format("Для файла списка {0} не найдена платежка № {1} с датой между {2} и {3} на сумму {4}. " +
+                            "Списки по описи {5} не обработаны. Попробуйте повторно обработать их после проведения платежа в Инверсии XXI век.",
+                            new object[] { new FileInfo(spis.FileName).Name, numPlat, dtPlat, dtPlat.AddDays(4), sumPlat, new FileInfo(spis.OpisSet.FileName).Name }));
+                        return;
+                    }
+                    spis.ITrnNum = idPlat;
+                    logger.Info(String.Format("К файлу списка {0} привязано платежное поручение с ITRNNUM {1}",
+                        new object[] { new FileInfo(spis.FileName).Name, spis.ITrnNum }));
+                }
+                else
+                {
+                    MessageBox.Show("Ошибка обработки XML");
+                }
+            }
+            ctx.SaveChanges();
+        }
+
+        private bool ОбработатьСписокНаЗачисление(string xml, ref pfr.Xsd1.ФайлПФР o)
+        {
+            XmlSerializer serializer = new XmlSerializer(typeof(pfr.Xsd1.ФайлПФР));
+
+            using (var reader = new StreamReader(new MemoryStream(Encoding.GetEncoding(1251).GetBytes(xml)), Encoding.GetEncoding(1251)))
+            {
+                try
+                {
+                    o = (pfr.Xsd1.ФайлПФР)serializer.Deserialize(reader);
+                }
+                catch (InvalidOperationException)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        private void mnuDeptInfo_Click(object sender, EventArgs e)
+        {
+
         }
     }
 
