@@ -25,33 +25,23 @@ namespace pfr
         internal bool AddVedInform(int from, int to)
         {
             bool rt = false;
-            try
+            using (var cn = new OracleConnection(OraCn))
             {
-                using (var cn = new OracleConnection(OraCn))
-                {
-                    decimal success = -1;
-                    var cmd = new OracleCommand();
-                    cmd.Connection = cn;
-                    cmd.CommandText = "BSV.Set_Dinfo";
-                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                int success = -1;
+                cn.Open();
+                var cmd = new OracleCommand();
+                cmd.Connection = cn;
+                cmd.CommandText = "BSV.Set_Dinfo";
+                cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
-                    //itnnum_in, itrnnum_out
-                    cmd.Parameters.Add("itnnum_in", OracleDbType.Decimal, System.Data.ParameterDirection.Input).Value = from;
-                    cmd.Parameters.Add("itnnum_out", OracleDbType.Decimal, System.Data.ParameterDirection.Input).Value = to;
-                    cmd.Parameters.Add("success", OracleDbType.Decimal, System.Data.ParameterDirection.ReturnValue);
-
-                    cmd.ExecuteNonQuery();
-                    success = Convert.ToDecimal(cmd.Parameters["kiekis"].Value);
-                    rt = (success == 0);
-                }
-            }
-            catch (OracleException e1)
-            {
-                MessageBox.Show(e1.Message);
-            }
-            catch (Exception e2)
-            {
-                MessageBox.Show(e2.Message);
+                //itnnum_in, itrnnum_out
+                cmd.Parameters.Add("success", OracleDbType.Int32, System.Data.ParameterDirection.ReturnValue);
+                cmd.Parameters.Add("iTRNnum_in", OracleDbType.Int64, System.Data.ParameterDirection.Input).Value = from;
+                cmd.Parameters.Add("iTRNnum_out", OracleDbType.Int64, System.Data.ParameterDirection.Input).Value = to;
+                
+                cmd.ExecuteNonQuery();
+                success = ((Oracle.ManagedDataAccess.Types.OracleDecimal)cmd.Parameters["success"].Value).ToInt32();
+                rt = (success == 0);
             }
             return rt;
         }
@@ -158,6 +148,46 @@ namespace pfr
                 MessageBox.Show(e2.Message);
             }
             return false;
+        }
+
+        public object GetDeptInfo(int itrnnum)
+        {
+            try
+            {
+                using (OracleConnection cn =
+                    new OracleConnection(OraCn))
+                {
+                    cn.Open();
+                    var cmd = new OracleCommand("select * from XXI.trn_dept_info where inum = :inum", cn);
+                    cmd.Parameters.Add("inum", itrnnum);
+                    using (var dr = cmd.ExecuteReader())
+                    {
+                        if (dr.Read())
+                        {
+                            return new
+                            {
+                                CCREATSTATUS = dr["CCREATSTATUS"] is DBNull ? "" : dr["CCREATSTATUS"].ToString(),
+                                CBUDCODE = dr["CBUDCODE"] is DBNull ? "" : dr["CBUDCODE"].ToString(),
+                                COKATOCODE = dr["COKATOCODE"] is DBNull ? "" : dr["COKATOCODE"].ToString(),
+                                CNALPURP = dr["CNALPURP"] is DBNull ? "" : dr["CNALPURP"].ToString(),
+                                CNALPERIOD = dr["CNALPERIOD"] is DBNull ? "" : dr["CNALPERIOD"].ToString(),
+                                CNALDOCNUM = dr["CNALDOCNUM"] is DBNull ? "" : dr["CNALDOCNUM"].ToString(),
+                                CNALDOCDATE = dr["CNALDOCDATE"] is DBNull ? "" : dr["CNALDOCDATE"].ToString(),
+                                CNALTYPE = dr["CNALTYPE"] is DBNull ? "" : dr["CNALTYPE"].ToString(),
+                                CNALFLAG = dr["CNALFLAG"] is DBNull ? "" : dr["CNALFLAG"].ToString(),
+                                CDOCINDEX = dr["CCREATSTATUS"] is DBNull ? "" : dr["CCREATSTATUS"].ToString(),
+                                CDOCINDEX_NZ = dr["CDOCINDEX_NZ"] is DBNull ? "" : dr["CDOCINDEX_NZ"].ToString()
+                            };
+                        }
+                        else
+                            return null;
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                throw new SaaException(String.Format("Ошибка получения ведомственной информации. ITRNNUM = {0}", itrnnum), e);
+            }
         }
     }
 }

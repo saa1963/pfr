@@ -178,8 +178,10 @@ namespace pfr
             foreach (var spis in o.SpisSet)
             {
                 pfr.Xsd1.ФайлПФР Список = null;
-                if (ОбработатьСписокНаЗачисление(spis.Xml, ref Список))
+                try
                 {
+                    ОбработатьСписокНаЗачисление(spis.Xml, ref Список);
+
                     var dtPlat = new DateTime(Int32.Parse(Список.ПачкаВходящихДокументов.ВХОДЯЩАЯ_ОПИСЬ.ДатаПлатежногоПоручения.Substring(6, 4)),
                                     Int32.Parse(Список.ПачкаВходящихДокументов.ВХОДЯЩАЯ_ОПИСЬ.ДатаПлатежногоПоручения.Substring(3, 2)),
                                     Int32.Parse(Список.ПачкаВходящихДокументов.ВХОДЯЩАЯ_ОПИСЬ.ДатаПлатежногоПоручения.Substring(0, 2)));
@@ -188,24 +190,25 @@ namespace pfr
                     int idPlat;
                     if ((idPlat = new OracleBd().ExistPlat(dtPlat, numPlat, sumPlat)) == 0)
                     {
-                        MessageBox.Show(String.Format("Для файла списка {0} не найдена платежка № {1} с датой между {2} и {3} на сумму {4}. " +
+                        throw new Exception(String.Format("Для файла списка {0} не найдена платежка № {1} с датой между {2} и {3} на сумму {4}. " +
                             "Списки по описи {5} не обработаны. Попробуйте повторно обработать их после проведения платежа в Инверсии XXI век.",
                             new object[] { new FileInfo(spis.FileName).Name, numPlat, dtPlat, dtPlat.AddDays(4), sumPlat, new FileInfo(spis.OpisSet.FileName).Name }));
-                        return;
                     }
                     spis.ITrnNum = idPlat;
                     logger.Info(String.Format("К файлу списка {0} привязано платежное поручение с ITRNNUM {1}",
                         new object[] { new FileInfo(spis.FileName).Name, spis.ITrnNum }));
                 }
-                else
+                catch (Exception e1)
                 {
-                    MessageBox.Show("Ошибка обработки XML");
+                    logger.Error(String.Format("Ошибка привязки платежки, файл {0}", spis.FileName));
+                    logger.Error(e1.ToString());
+                    MessageBox.Show("Ошибка привязки. " + Utils.Current.LogMessage);
                 }
             }
             ctx.SaveChanges();
         }
 
-        private bool ОбработатьСписокНаЗачисление(string xml, ref pfr.Xsd1.ФайлПФР o)
+        private void ОбработатьСписокНаЗачисление(string xml, ref pfr.Xsd1.ФайлПФР o)
         {
             XmlSerializer serializer = new XmlSerializer(typeof(pfr.Xsd1.ФайлПФР));
 
@@ -215,17 +218,64 @@ namespace pfr
                 {
                     o = (pfr.Xsd1.ФайлПФР)serializer.Deserialize(reader);
                 }
-                catch (InvalidOperationException)
+                catch (InvalidOperationException e)
                 {
-                    return false;
+                    throw new Exception("Ошибка десериализации XML", e);
                 }
             }
-            return true;
         }
 
         private void mnuDeptInfo_Click(object sender, EventArgs e)
         {
-
+            string message;
+            try
+            {
+                DateTime dfakt = DateTime.MinValue;
+                int itrnnum = -1;
+                if (bs1.Current == null) return;
+                OpisSet o = (OpisSet)bs1.Current;
+                foreach (var spis in o.SpisSet)
+                {
+                    if (spis.ITrnNum.HasValue)
+                    {
+                        var or = new OracleBd();
+                        foreach (var trn in spis.TrnSet)
+                        {
+                            if (or.ExistTransaction(trn.Acc, trn.Sm, trn.DateReg.Date, trn.Id, ref dfakt, ref itrnnum))
+                            {
+                                logger.Info(String.Format("Копирование вед.информации для платежа дата: {0} фио: {1} счет: {2} сумма: {3}", 
+                                    trn.DateReg.Date, trn.Fio, trn.Acc, trn.Sm));
+                                or.AddVedInform(spis.ITrnNum.Value, itrnnum);
+                            }
+                            else
+                            {
+                                message = String.Format("Поступление на счет {0} {1} на сумму {3} не проведено в Инверсии. Обработка прервана.",
+                                    new object[] { trn.Acc, trn.Fio, trn.Sm });
+                                MessageBox.Show(message);
+                                throw new SaaException(message);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        message = String.Format("Список {0} не привязан к платежке из ПФР", spis.FileName);
+                        MessageBox.Show(message);
+                        throw new SaaException(message);
+                    }
+                    message = String.Format("Ведомственная информация для платежей из файла {0} записана.", spis.FileName);
+                    logger.Info(message);
+                    MessageBox.Show(message);
+                }
+            }
+            catch(SaaException e1)
+            {
+                logger.Error(e1.ToString());
+            }
+            catch (Exception e1)
+            {
+                logger.Error(e1.ToString());
+                MessageBox.Show("Ошибка копирования ведомственной информации. " + Utils.Current.LogMessage);
+            }
         }
     }
 

@@ -109,5 +109,11 @@ namespace pfr
                 return false;
             }
         }
+
+        public string LogMessage
+        {
+            get => String.Format("Подробно в журнале событий в папке {0}",
+                        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "pfr"));
+        }
     }
 }

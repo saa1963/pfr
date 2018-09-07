@@ -88,6 +88,7 @@ namespace pfr
                 foreach (DataGridViewRow r in dgv.SelectedRows)
                 {
                     var o = (TrnSet)r.DataBoundItem;
+                    int? itrnnum = o.SpisSet.ITrnNum;
                     var ar = (from ds in ctx.DoSet where ds.Kod == o.DOffice select ds).ToArray()[0];
                     var DebAcc = ar.Acc47422;
                     var OdbUser = ar.Login;
@@ -109,6 +110,25 @@ namespace pfr
                     s += String.Format("Doc_Num={0}\r\n", "2");
                     s += String.Format("User={0}\r\n", OdbUser);
                     s += String.Format("Purpose=Переч.пенсии из ПФР за {0} {1}г. [Id-{2}]\r\n", Utils.months[o.SpisSet.mec - 1], o.SpisSet.god, o.Id);
+
+                    if (itrnnum.HasValue)
+                    {
+                        dynamic deptInfo = new OracleBd().GetDeptInfo(itrnnum.Value);
+                        if (deptInfo != null)
+                        {
+                            // ведомственная информация
+                            s += String.Format("STATUSSOSTAVIT={0}\r\n", deptInfo.CCREATSTATUS);
+                            s += String.Format("KBK_F={0}\r\n", deptInfo.CBUDCODE);
+                            s += String.Format("OKATO={0}\r\n", deptInfo.COKATOCODE);
+                            s += String.Format("POKOSNPLAT={0}\r\n", deptInfo.CNALPURP);
+                            s += String.Format("POKNALPERIOD={0}\r\n", deptInfo.CNALPERIOD);
+                            s += String.Format("POKNUMDOC={0}\r\n", deptInfo.CNALDOCNUM);
+                            s += String.Format("POKDATEDOC={0}\r\n", deptInfo.CNALDOCDATE);
+                            s += String.Format("POKTYPEPLAT={0}\r\n", deptInfo.CNALTYPE);
+                            s += String.Format("DOC_INDEX={0}\r\n", deptInfo.CDOCINDEX);
+                        }
+                    }
+
                     s += "# Doc End\r\n";
                     i++;
                     sm0 += o.Sm;
