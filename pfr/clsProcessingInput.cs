@@ -14,6 +14,7 @@ namespace pfr
 {
     internal class clsProcessingInput
     {
+        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
         public string DoIt()
         {
             int kolisx = 0, kolvx = 0;
@@ -51,10 +52,11 @@ namespace pfr
                             int idPlat;
                             if ((idPlat = new OracleBd().ExistPlat(dtPlat, numPlat, sumPlat)) == 0)
                             {
-                                MessageBox.Show(String.Format("Для файла списка {0} не найдена платежка № {1} с датой между {2} и {3} на сумму {4}. " + 
-                                    "Списки по описи {5} не обработаны. Попробуйте повторно обработать их после проведения платежа в Инверсии XXI век.",
-                                    new object[] { new FileInfo(ИмяФайлаСписокНаЗачисление).Name, numPlat, dtPlat, dtPlat.AddDays(4), sumPlat, new FileInfo(ИмяФайлаОписьНаЗачисление).Name}));
-                                throw new ExceptionNotFindPlat();
+                                var message = String.Format("Для файла списка {0} не найдена платежка № {1} с датой между {2} и {3} на сумму {4}. " +
+                                    "Списки по описи {5} не обработаны. Попробуйте повторно обработать их после проведения платежа в Инверсии.",
+                                    new FileInfo(ИмяФайлаСписокНаЗачисление).Name, numPlat, dtPlat, dtPlat.AddDays(4), sumPlat, new FileInfo(ИмяФайлаОписьНаЗачисление).Name);
+                                MessageBox.Show(message);
+                                throw new ExceptionNotFindPlat(message);
                             }
                             auxDict.Add(Список.ИмяФайла, idPlat);
                             kolvx++;
@@ -150,11 +152,13 @@ namespace pfr
                 }
                 catch (DbUpdateException e1)
                 {
+                    logger.Error("", e1);
                     MessageBox.Show("Ошибка БД, обратитесь к администратору.");
                     folder = clsConst.FolderBad;
                 }
-                catch (ExceptionNotFindPlat)
+                catch (ExceptionNotFindPlat e1)
                 {
+                    logger.Error(e1.Message);
                     continue;
                 }
             delete:
@@ -206,5 +210,7 @@ namespace pfr
     class ExceptionNotFindPlat: Exception
     {
         public ExceptionNotFindPlat() : base() { }
+        public ExceptionNotFindPlat(string message) : base(message) { }
+        public ExceptionNotFindPlat(string message, Exception e) : base(message, e) { }
     }
 }

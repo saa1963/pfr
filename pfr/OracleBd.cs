@@ -186,7 +186,8 @@ namespace pfr
             }
             catch (Exception e)
             {
-                throw new SaaException(String.Format("Ошибка получения ведомственной информации. ITRNNUM = {0}", itrnnum), e);
+                var message = String.Format("Ошибка получения ведомственной информации. ITRNNUM = {0}", itrnnum);
+                throw new SaaException(message, e);
             }
         }
     }
