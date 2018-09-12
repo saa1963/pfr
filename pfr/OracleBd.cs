@@ -11,6 +11,7 @@ namespace pfr
 {
     public class OracleBd
     {
+        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
         //      private string OraCn = String.Format(@"Data Source=(DESCRIPTION =
         //      (ADDRESS = (PROTOCOL = TCP)(HOST = {0})(PORT = {2}))
         //      (CONNECT_DATA =
@@ -20,7 +21,8 @@ namespace pfr
         //);User ID=PFR;Password={1}", Settings.Default.OraIp, Settings.Default.OraPasword, Settings.Default.OraPort, Settings.Default.OraService);
 
         //private string OraCn = @"Data Source=ODB;User ID=PFR;Password=zxc";
-        private string OraCn = @"Data Source=TEST;User ID=PFR;Password=zxc";
+        //private string OraCn = @"Data Source=TEST;User ID=PFR;Password=zxc";
+        private string OraCn = @"Data Source=TEST;User ID=XXI;Password=111222";
 
         internal bool AddVedInform(int from, int to)
         {
@@ -191,24 +193,39 @@ namespace pfr
             }
         }
 
-        public bool RegisterDoc(string DebAcc, string CredAcc, decimal Sum, DateTime Dt, string User, string Info)
+        public bool RegisterDoc(string DebAcc, string CredAcc, decimal Sum, DateTime Dt, string User, string Info, int IdTrn)
         {
             bool rt = false;
+            OracleCommand cmd = new OracleCommand();
             using (var cn = new OracleConnection(OraCn))
             {
-                int success = -1;
                 cn.Open();
-                var cmd = new OracleCommand();
+
+                cmd.CommandText = String.Format(
+                        "select itrnnum, dtrntran from XXI.\"trn\" where ctrnaccc = '{0}' and mtrnsumc = {1} " +
+                            "and dtrntran >= TO_DATE('{2}', 'DD.MM.YYYY') and dtrntran < TO_DATE('{3}', 'DD.MM.YYYY') and ctrnpurp like '%[Id-{4}]%'",
+                        CredAcc, Sum.ToString("F2").Replace(',', '.'), Dt.ToString("dd.MM.yyyy"), Dt.AddDays(1).ToString("dd.MM.yyyy"), IdTrn);
+                cmd.CommandType = System.Data.CommandType.Text;
+
+                string success = "REG_UNKNOWN_ERROR";
                 cmd.Connection = cn;
-                cmd.CommandText = "IDOC_REG.RegisterR2";
+                cmd.CommandText = "XXI.IDOC_REG.Register";
                 cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                cmd.BindByName = true;
 
                 // Возвращаемое значение
-                cmd.Parameters.Add("Success", OracleDbType.Varchar2, System.Data.ParameterDirection.ReturnValue);
+                var Success = new OracleParameter("Success", OracleDbType.Varchar2, 4000);
+                Success.Direction = System.Data.ParameterDirection.ReturnValue;
+                cmd.Parameters.Add(Success);
                 // Сообщение об ошибке для возврата
-                cmd.Parameters.Add("ErrorMsg", OracleDbType.Varchar2, System.Data.ParameterDirection.Output);
+                var ErrorMsg = new OracleParameter("ErrorMsg", OracleDbType.Varchar2, 4000);
+                ErrorMsg.Direction = System.Data.ParameterDirection.Output;
+                cmd.Parameters.Add(ErrorMsg);
                 // Тип операции BO1
-                cmd.Parameters.Add("OpType", OracleDbType.Int16, System.Data.ParameterDirection.Input).Value = 1;
+                var OpType = new OracleParameter("OpType", OracleDbType.Int16);
+                OpType.Direction = System.Data.ParameterDirection.Input;
+                OpType.Value = 1;
+                cmd.Parameters.Add(OpType);
                 // Дата регистрации
                 cmd.Parameters.Add("RegDate", OracleDbType.Date, System.Data.ParameterDirection.Input).Value = Dt;
                 // Счет дебета
@@ -227,50 +244,20 @@ namespace pfr
                 cmd.Parameters.Add("BatNum", OracleDbType.Int16, System.Data.ParameterDirection.Input).Value = 0;
                 // Дата платежа (валютирования)
                 cmd.Parameters.Add("ValDate", OracleDbType.Date, System.Data.ParameterDirection.Input).Value = Dt;
-                // Очередность платежа
-                cmd.Parameters.Add("Priority", OracleDbType.Int16, System.Data.ParameterDirection.Input).Value = DBNull.Value;
                 // Тип операции 2 порядка
                 cmd.Parameters.Add("SubOpType", OracleDbType.Int16, System.Data.ParameterDirection.Input).Value = 1;
-                // Наш корсчет
-                cmd.Parameters.Add("CorAccO", OracleDbType.Varchar2, 25, System.Data.ParameterDirection.Input).Value = DBNull.Value;
-                // Код МФО/МСО/КУ Банка-корреспондента
-                cmd.Parameters.Add("MFOa", OracleDbType.Varchar2, 11, System.Data.ParameterDirection.Input).Value = DBNull.Value;
-                // Кор.Счет Банка-корреспондента
-                cmd.Parameters.Add("CorAccA", OracleDbType.Varchar2, 25, System.Data.ParameterDirection.Input).Value = DBNull.Value;
-                // Название Банка-корреспондента
-                cmd.Parameters.Add("CorAccAName", OracleDbType.Varchar2, 128, System.Data.ParameterDirection.Input).Value = DBNull.Value;
-                // Наименование счета получателя
-                cmd.Parameters.Add("RecipientName", OracleDbType.Varchar2, 300, System.Data.ParameterDirection.Input).Value = DBNull.Value;
-                // ИНН корреспондента
-                cmd.Parameters.Add("INNA", OracleDbType.Varchar2, 13, System.Data.ParameterDirection.Input).Value = DBNull.Value;
-                // Способ доставки платежа (почта/телеграф/?л.платеж)
-                cmd.Parameters.Add("DeliveryWay", OracleDbType.Varchar2, 1, System.Data.ParameterDirection.Input).Value = DBNull.Value;
-                // Наименование клиента нашего банка
-                cmd.Parameters.Add("Client_Name", OracleDbType.Varchar2, 300, System.Data.ParameterDirection.Input).Value = DBNull.Value;
-                // ИНН клиента нашего банка
-                cmd.Parameters.Add("Client_INN", OracleDbType.Varchar2, 13, System.Data.ParameterDirection.Input).Value = DBNull.Value;
-                // Код участника (СБ РФ) корреспондента
-                cmd.Parameters.Add("SBCodeA", OracleDbType.Int32, System.Data.ParameterDirection.Input).Value = DBNull.Value;
                 // Валюта документа (суммы)
-                cmd.Parameters.Add("cDocCurrency", OracleDbType.Char, 3, System.Data.ParameterDirection.Input).Value = DBNull.Value;
+                cmd.Parameters.Add("cDocCurrency", OracleDbType.Char, 3, System.Data.ParameterDirection.Input).Value = "RUR";
                 // Вид операции
                 cmd.Parameters.Add("cVO", OracleDbType.Varchar2, 2, System.Data.ParameterDirection.Input).Value = "17";
-                // Флаг: игнорировать возникновение красного сальдо
-                cmd.Parameters.Add("bIgnoreRB", OracleDbType.Boolean, System.Data.ParameterDirection.Input).Value = false;
-                // Флаг: генерировать ошибку при требовании редактирования комиссий
-                cmd.Parameters.Add("cEditComms", OracleDbType.Varchar2, System.Data.ParameterDirection.Input).Value = "NO";
-                // Дата поступления документа в банк
-                cmd.Parameters.Add("dShadow", OracleDbType.Date, System.Data.ParameterDirection.Input).Value = DBNull.Value;
-                // Условия оплаты документа
-                cmd.Parameters.Add("cCondPay", OracleDbType.Varchar2, 1024, System.Data.ParameterDirection.Input).Value = DBNull.Value;
-                // КПП корреспондента
-                cmd.Parameters.Add("KPPA", OracleDbType.Varchar2, 9, System.Data.ParameterDirection.Input).Value = DBNull.Value;
-                // Ведомственная информация
-                cmd.Parameters.Add("KPPA", OracleDbType., System.Data.ParameterDirection.Input).Value = DBNull.Value;
-
+                // Владелец документа
+                cmd.Parameters.Add("cIDOpen", OracleDbType.Varchar2, 4000, System.Data.ParameterDirection.Input).Value = User;
                 cmd.ExecuteNonQuery();
-                success = ((Oracle.ManagedDataAccess.Types.OracleDecimal)cmd.Parameters["Success"].Value).ToInt32();
-                rt = (success == 0);
+                success = ((Oracle.ManagedDataAccess.Types.OracleString)cmd.Parameters["Success"].Value).ToString().Trim();
+                var eMsg = ((Oracle.ManagedDataAccess.Types.OracleString)cmd.Parameters["ErrorMsg"].Value).ToString().Trim();
+                rt = (success == "Ok");
+                if (!rt)
+                    logger.Error(eMsg);
             }
             return rt;
         }

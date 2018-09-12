@@ -76,18 +76,108 @@ namespace pfr
             Odb();
         }
 
+        //private void Odb()
+        //{
+        //    try
+        //    {
+        //        int i = 0;
+        //        decimal sm0 = 0;
+        //        string s = "";
+        //        var f = new frmGetDate(tbDate.Value.Date);
+        //        if (f.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
+        //        using (var ctx = new pfrEntities1(Utils.Current.cn))
+        //        {
+        //            //var doffice = (from user in ctx.UserSet where user.Login == Settings.Default.login select user.DOffice).ToArray()[0];
+        //            foreach (DataGridViewRow r in dgv.SelectedRows)
+        //            {
+        //                var o = (TrnSet)r.DataBoundItem;
+        //                int? itrnnum = o.SpisSet.ITrnNum;
+        //                var ar = (from ds in ctx.DoSet where ds.Kod == o.DOffice select ds).ToArray()[0];
+        //                var DebAcc = ar.Acc47422;
+        //                var OdbUser = ar.Login;
+        //                s += "# Doc Begin\r\n";
+        //                s += String.Format("Address={0}\r\n", "0");
+        //                s += String.Format("Deb_Acc={0}\r\n", DebAcc);
+        //                s += String.Format("Deb_Cur={0}\r\n", "RUR");
+        //                s += String.Format("Deb_Sum={0}\r\n", o.Sm.ToString("F2"));
+        //                s += String.Format("Cre_Acc={0}\r\n", o.Acc);
+        //                s += String.Format("Cre_Cur={0}\r\n", "RUR");
+        //                s += String.Format("Cre_Sum={0}\r\n", o.Sm.ToString("F2"));
+        //                s += String.Format("BO1={0}\r\n", "1");
+        //                s += String.Format("BO2={0}\r\n", "1");
+        //                s += String.Format("VO={0}\r\n", "17");
+        //                s += String.Format("Date_Reg={0}\r\n", f.Dt.ToString("dd.MM.yyyy"));
+        //                s += String.Format("Date_Doc={0}\r\n", f.Dt.ToString("dd.MM.yyyy"));
+        //                s += String.Format("Date_Val={0}\r\n", f.Dt.ToString("dd.MM.yyyy"));
+        //                s += String.Format("Date_Trn={0}\r\n", f.Dt.ToString("dd.MM.yyyy"));
+        //                s += String.Format("Doc_Num={0}\r\n", "2");
+        //                s += String.Format("User={0}\r\n", OdbUser);
+        //                s += String.Format("Purpose=Переч.пенсии из ПФР за {0} {1}г. [Id-{2}]\r\n", Utils.months[o.SpisSet.mec - 1], o.SpisSet.god, o.Id);
+
+        //                if (itrnnum.HasValue)
+        //                {
+        //                    dynamic deptInfo = new OracleBd().GetDeptInfo(itrnnum.Value);
+        //                    if (deptInfo != null)
+        //                    {
+        //                        //// ведомственная информация
+        //                        //s += String.Format("STATUSSOSTAVIT={0}\r\n", deptInfo.CCREATSTATUS);
+        //                        //s += String.Format("KBK_F={0}\r\n", deptInfo.CBUDCODE);
+        //                        //s += String.Format("OKATO={0}\r\n", deptInfo.COKATOCODE);
+        //                        //s += String.Format("POKOSNPLAT={0}\r\n", deptInfo.CNALPURP);
+        //                        //s += String.Format("POKNALPERIOD={0}\r\n", deptInfo.CNALPERIOD);
+        //                        //s += String.Format("POKNUMDOC={0}\r\n", deptInfo.CNALDOCNUM);
+        //                        //s += String.Format("POKDATEDOC={0}\r\n", deptInfo.CNALDOCDATE);
+        //                        //s += String.Format("POKTYPEPLAT={0}\r\n", deptInfo.CNALTYPE);
+        //                        //s += String.Format("DOC_INDEX={0}\r\n", deptInfo.CDOCINDEX);
+        //                    }
+        //                }
+        //                else
+        //                {
+        //                    logger.Warn(String.Format("{0} счет № {1} на сумму {2} - отсутствует привязка к платежному документу", o.Fio, o.Acc, o.Sm));
+        //                }
+
+        //                s += "# Doc End\r\n";
+        //                i++;
+        //                sm0 += o.Sm;
+        //            }
+        //        }
+        //        if (i > 0)
+        //        {
+        //            SaveFileDialog sfd = new SaveFileDialog();
+        //            sfd.Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*";
+        //            sfd.InitialDirectory = String.IsNullOrWhiteSpace(Settings.Default.SaveFilePath)
+        //                ? "M:\\" : Settings.Default.SaveFilePath;
+        //            sfd.FileName = "pfr.txt";
+        //            if (sfd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+        //            {
+        //                File.WriteAllText(sfd.FileName, s, Encoding.GetEncoding(1251));
+        //                Settings.Default.SaveFilePath = new FileInfo(sfd.FileName).DirectoryName;
+        //                Settings.Default.Save();
+        //                MessageBox.Show(String.Format("Выгружено {0} документов на сумму {1}.", i, sm0.ToString("F2")));
+        //            }
+        //        }
+        //        else
+        //        {
+        //            MessageBox.Show("Не выбрано ни одного документа.");
+        //        }
+        //    }
+        //    catch (Exception e1)
+        //    {
+        //        logger.Error(e1.ToString());
+        //        MessageBox.Show("Ошибка при формировании документов. " + Utils.Current.LogMessage);
+        //    }
+        //}
+
         private void Odb()
         {
             try
             {
-                int i = 0;
+                int i = 0, tot = 0;
                 decimal sm0 = 0;
-                string s = "";
                 var f = new frmGetDate(tbDate.Value.Date);
                 if (f.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
                 using (var ctx = new pfrEntities1(Utils.Current.cn))
                 {
-                    //var doffice = (from user in ctx.UserSet where user.Login == Settings.Default.login select user.DOffice).ToArray()[0];
                     foreach (DataGridViewRow r in dgv.SelectedRows)
                     {
                         var o = (TrnSet)r.DataBoundItem;
@@ -95,70 +185,17 @@ namespace pfr
                         var ar = (from ds in ctx.DoSet where ds.Kod == o.DOffice select ds).ToArray()[0];
                         var DebAcc = ar.Acc47422;
                         var OdbUser = ar.Login;
-                        s += "# Doc Begin\r\n";
-                        s += String.Format("Address={0}\r\n", "0");
-                        s += String.Format("Deb_Acc={0}\r\n", DebAcc);
-                        s += String.Format("Deb_Cur={0}\r\n", "RUR");
-                        s += String.Format("Deb_Sum={0}\r\n", o.Sm.ToString("F2"));
-                        s += String.Format("Cre_Acc={0}\r\n", o.Acc);
-                        s += String.Format("Cre_Cur={0}\r\n", "RUR");
-                        s += String.Format("Cre_Sum={0}\r\n", o.Sm.ToString("F2"));
-                        s += String.Format("BO1={0}\r\n", "1");
-                        s += String.Format("BO2={0}\r\n", "1");
-                        s += String.Format("VO={0}\r\n", "17");
-                        s += String.Format("Date_Reg={0}\r\n", f.Dt.ToString("dd.MM.yyyy"));
-                        s += String.Format("Date_Doc={0}\r\n", f.Dt.ToString("dd.MM.yyyy"));
-                        s += String.Format("Date_Val={0}\r\n", f.Dt.ToString("dd.MM.yyyy"));
-                        s += String.Format("Date_Trn={0}\r\n", f.Dt.ToString("dd.MM.yyyy"));
-                        s += String.Format("Doc_Num={0}\r\n", "2");
-                        s += String.Format("User={0}\r\n", OdbUser);
-                        s += String.Format("Purpose=Переч.пенсии из ПФР за {0} {1}г. [Id-{2}]\r\n", Utils.months[o.SpisSet.mec - 1], o.SpisSet.god, o.Id);
-
-                        if (itrnnum.HasValue)
+                        var rt = new OracleBd().RegisterDoc(DebAcc: DebAcc, CredAcc: o.Acc, Sum: o.Sm, Dt: f.Dt, User: OdbUser, 
+                            Info: String.Format("Переч.пенсии из ПФР за {0} {1}г. [Id-{2}]", Utils.months[o.SpisSet.mec - 1], 
+                            o.SpisSet.god, o.Id), IdTrn: o.Id);
+                        if (rt)
                         {
-                            dynamic deptInfo = new OracleBd().GetDeptInfo(itrnnum.Value);
-                            if (deptInfo != null)
-                            {
-                                //// ведомственная информация
-                                //s += String.Format("STATUSSOSTAVIT={0}\r\n", deptInfo.CCREATSTATUS);
-                                //s += String.Format("KBK_F={0}\r\n", deptInfo.CBUDCODE);
-                                //s += String.Format("OKATO={0}\r\n", deptInfo.COKATOCODE);
-                                //s += String.Format("POKOSNPLAT={0}\r\n", deptInfo.CNALPURP);
-                                //s += String.Format("POKNALPERIOD={0}\r\n", deptInfo.CNALPERIOD);
-                                //s += String.Format("POKNUMDOC={0}\r\n", deptInfo.CNALDOCNUM);
-                                //s += String.Format("POKDATEDOC={0}\r\n", deptInfo.CNALDOCDATE);
-                                //s += String.Format("POKTYPEPLAT={0}\r\n", deptInfo.CNALTYPE);
-                                //s += String.Format("DOC_INDEX={0}\r\n", deptInfo.CDOCINDEX);
-                            }
+                            i++;
+                            sm0 += o.Sm;
                         }
-                        else
-                        {
-                            logger.Warn(String.Format("{0} счет № {1} на сумму {2} - отсутствует привязка к платежному документу", o.Fio, o.Acc, o.Sm));
-                        }
-
-                        s += "# Doc End\r\n";
-                        i++;
-                        sm0 += o.Sm;
+                        tot++;
                     }
-                }
-                if (i > 0)
-                {
-                    SaveFileDialog sfd = new SaveFileDialog();
-                    sfd.Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*";
-                    sfd.InitialDirectory = String.IsNullOrWhiteSpace(Settings.Default.SaveFilePath)
-                        ? "M:\\" : Settings.Default.SaveFilePath;
-                    sfd.FileName = "pfr.txt";
-                    if (sfd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-                    {
-                        File.WriteAllText(sfd.FileName, s, Encoding.GetEncoding(1251));
-                        Settings.Default.SaveFilePath = new FileInfo(sfd.FileName).DirectoryName;
-                        Settings.Default.Save();
-                        MessageBox.Show(String.Format("Выгружено {0} документов на сумму {1}.", i, sm0.ToString("F2")));
-                    }
-                }
-                else
-                {
-                    MessageBox.Show("Не выбрано ни одного документа.");
+                    MessageBox.Show(String.Format("Выгружено {0} документов из {1} на сумму {2}.", i, tot, sm0.ToString("F2")));
                 }
             }
             catch (Exception e1)
