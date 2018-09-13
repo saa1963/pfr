@@ -22,7 +22,7 @@ namespace pfr
 
         //private string OraCn = @"Data Source=ODB;User ID=PFR;Password=zxc";
         //private string OraCn = @"Data Source=TEST;User ID=PFR;Password=zxc";
-        private string OraCn = @"Data Source=TEST;User ID=XXI;Password=111222--";
+        private string OraCn = @"Data Source=TEST;User ID=XXI;Password=111222";
 
         internal bool AddVedInform(int from, int to)
         {
