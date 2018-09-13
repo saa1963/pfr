@@ -40,7 +40,6 @@
             this.mnuCheck = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuManulCheck = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuOtchet = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuBindPlat = new System.Windows.Forms.ToolStripMenuItem();
             this.tbPeriod = new System.Windows.Forms.ToolStripComboBox();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.dgv1 = new System.Windows.Forms.DataGridView();
@@ -54,7 +53,6 @@
             this.dgv2 = new System.Windows.Forms.DataGridView();
             this.Column7 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column8 = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.mnuDeptInfo = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -81,9 +79,7 @@
             this.mnuVx,
             this.mnuCheck,
             this.mnuManulCheck,
-            this.mnuOtchet,
-            this.mnuBindPlat,
-            this.mnuDeptInfo});
+            this.mnuOtchet});
             this.обработкаToolStripMenuItem.Name = "обработкаToolStripMenuItem";
             this.обработкаToolStripMenuItem.Size = new System.Drawing.Size(58, 23);
             this.обработкаToolStripMenuItem.Text = "Задачи";
@@ -91,21 +87,21 @@
             // mnuVx
             // 
             this.mnuVx.Name = "mnuVx";
-            this.mnuVx.Size = new System.Drawing.Size(291, 22);
+            this.mnuVx.Size = new System.Drawing.Size(283, 22);
             this.mnuVx.Text = "Прием входящих файлов из ПФР";
             this.mnuVx.Click += new System.EventHandler(this.mnuVx_Click);
             // 
             // mnuCheck
             // 
             this.mnuCheck.Name = "mnuCheck";
-            this.mnuCheck.Size = new System.Drawing.Size(291, 22);
+            this.mnuCheck.Size = new System.Drawing.Size(283, 22);
             this.mnuCheck.Text = "Автоматическая проверка поручений";
             this.mnuCheck.Click += new System.EventHandler(this.mnuCheck_Click);
             // 
             // mnuManulCheck
             // 
             this.mnuManulCheck.Name = "mnuManulCheck";
-            this.mnuManulCheck.Size = new System.Drawing.Size(291, 22);
+            this.mnuManulCheck.Size = new System.Drawing.Size(283, 22);
             this.mnuManulCheck.Text = "Ручная проверка поручений";
             this.mnuManulCheck.Visible = false;
             this.mnuManulCheck.Click += new System.EventHandler(this.mnuManulCheck_Click);
@@ -113,16 +109,9 @@
             // mnuOtchet
             // 
             this.mnuOtchet.Name = "mnuOtchet";
-            this.mnuOtchet.Size = new System.Drawing.Size(291, 22);
+            this.mnuOtchet.Size = new System.Drawing.Size(283, 22);
             this.mnuOtchet.Text = "Отчет о зачислении в ПФР";
             this.mnuOtchet.Click += new System.EventHandler(this.mnuOtchet_Click);
-            // 
-            // mnuBindPlat
-            // 
-            this.mnuBindPlat.Name = "mnuBindPlat";
-            this.mnuBindPlat.Size = new System.Drawing.Size(291, 22);
-            this.mnuBindPlat.Text = "Подвязать платежку";
-            this.mnuBindPlat.Click += new System.EventHandler(this.mnuBindPlat_Click);
             // 
             // tbPeriod
             // 
@@ -224,7 +213,7 @@
             // 
             // Column9
             // 
-            this.Column9.DataPropertyName = "KolObrab";
+            this.Column9.DataPropertyName = "KolObrab1";
             dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             this.Column9.DefaultCellStyle = dataGridViewCellStyle4;
             this.Column9.HeaderText = "Кол-во обраб. поручений";
@@ -276,13 +265,6 @@
             this.Column8.Resizable = System.Windows.Forms.DataGridViewTriState.True;
             this.Column8.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
             // 
-            // mnuDeptInfo
-            // 
-            this.mnuDeptInfo.Name = "mnuDeptInfo";
-            this.mnuDeptInfo.Size = new System.Drawing.Size(291, 22);
-            this.mnuDeptInfo.Text = "Занести в документы вед.информацию";
-            this.mnuDeptInfo.Click += new System.EventHandler(this.mnuDeptInfo_Click);
-            // 
             // frmInputFiles
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -331,7 +313,5 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Column5;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column9;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column6;
-        private System.Windows.Forms.ToolStripMenuItem mnuBindPlat;
-        private System.Windows.Forms.ToolStripMenuItem mnuDeptInfo;
     }
 }

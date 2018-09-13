@@ -15,7 +15,7 @@ namespace pfr
     internal class clsProcessingInput
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
-        public string DoIt()
+        public string DoIt(List<int> savedTrn)
         {
             int kolisx = 0, kolvx = 0;
             string doffice = null; ;
@@ -118,6 +118,7 @@ namespace pfr
                                     }
                                     zch.DOffice = doffice;
                                     ctx.SaveChanges();
+                                    savedTrn.Add(zch.Id);
                                     foreach (var z0 in z.ВсеВыплаты.Выплата)
                                     {
                                         var zch1 = new TrnSet1();

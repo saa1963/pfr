@@ -43,6 +43,9 @@ namespace pfr
             }
         }
 
+        public string OraCn { get; set; }
+        public string UserOffice { get; set; }
+
         public int GetSequence(string pname)
         {
             using (var ctx = new pfrEntities1(Utils.Current.cn))

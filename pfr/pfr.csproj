@@ -155,6 +155,7 @@
     <Compile Include="OpisSet.cs">
       <DependentUpon>Pfr.tt</DependentUpon>
     </Compile>
+    <Compile Include="OpisSetPart.cs" />
     <Compile Include="Options.cs">
       <DependentUpon>Pfr.tt</DependentUpon>
     </Compile>

@@ -18,6 +18,7 @@ namespace pfr
         BindingSource bs1 = new BindingSource();
         BindingSource bs2 = new BindingSource();
         pfrEntities1 ctx = new pfrEntities1(Utils.Current.cn);
+        //BindingList<OpisSet> bss = new BindingList<OpisSet>()
         
         public frmInputFiles()
         {
@@ -68,8 +69,9 @@ namespace pfr
         private void RefreshData1()
         {
             bs1.DataSource = null;
-            bs1.DataSource = ctx.OpisSet.Where(s => s.DateReg >= ((MonthPeriod)tbPeriod.SelectedItem).Dt1 && 
+            var lst = ctx.OpisSet.Where(s => s.DateReg >= ((MonthPeriod)tbPeriod.SelectedItem).Dt1 && 
                 s.DateReg <= ((MonthPeriod)tbPeriod.SelectedItem).Dt2).OrderByDescending(s => s.DateReg).ToList();
+            bs1.DataSource = new BindingList<OpisSet>(lst);
             dgv1.DataSource = bs1;
         }
 
@@ -79,7 +81,24 @@ namespace pfr
             {
                 return;
             }
-            var msg = new clsProcessingInput().DoIt();
+            var savedTrn = new List<int>();
+            var msg = new clsProcessingInput().DoIt(savedTrn);
+            foreach (var trn in savedTrn)
+            {
+                var o = ctx.TrnSet.Find(trn);
+                if (o != null)
+                {
+                    var ar = (from ds in ctx.DoSet where ds.Kod == o.DOffice select ds).ToArray()[0];
+                    var DebAcc = ar.Acc47422;
+                    var OdbUser = ar.Login;
+                    if (new OracleBd().RegisterDoc(DebAcc: DebAcc, CredAcc: o.Acc, Sum: o.Sm, Dt: o.DateReg, User: OdbUser,
+                                Info: String.Format("Переч.пенсии из ПФР за {0} {1}г. [Id-{2}]", Utils.months[o.SpisSet.mec - 1],
+                                o.SpisSet.god, o.Id), IdTrn: o.Id))
+                    {
+                        logger.Info(String.Format("Зарегистрирован платежный ордер. Дебет {0} Кредит {1} {2} на сумму {3}", DebAcc, o.Acc, o.Fio, o.Sm));
+                    }
+                }
+            }
             RefreshData1();
             MessageBox.Show(msg);
         }
@@ -137,7 +156,7 @@ namespace pfr
                     totkol++;
                 }
             }
-            o.KolObrab = obr;
+            o.KolObrab1 = obr;
             ctx.SaveChanges();
             MessageBox.Show(String.Format("Осталось {0} необработанных поручений.", totkol - obr));
         }

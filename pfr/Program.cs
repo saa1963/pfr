@@ -1,5 +1,7 @@
-﻿using System;
+﻿using pfr.Properties;
+using System;
 using System.Collections.Generic;
+using System.Data.Entity.Core.EntityClient;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -16,11 +18,41 @@ namespace pfr
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+
+            //var Server = "192.168.20.221";
+            var Server = "(localdb)\\MSSQLLocalDB";
+            var Database = "pfr";
+            var Login = "sa";
+            //var Password = "zxc";
+            var Password = "1";
+
+            // Initialize the EntityConnectionStringBuilder.
+            EntityConnectionStringBuilder entityBuilder =
+                new EntityConnectionStringBuilder();
+
+            //Set the provider name.
+            entityBuilder.Provider = "System.Data.SqlClient";
+
+            // Set the provider-specific connection string.
+            entityBuilder.ProviderConnectionString = "Data Source=" + Server +
+                ";Initial Catalog=" + Database +
+                ";Persist Security Info=True;User ID=" + Login +
+                ";Password=" + Password;
+
+            // Set the Metadata location.
+            entityBuilder.Metadata = @"res://*/Pfr.csdl|
+                            res://*/Pfr.ssdl|
+                            res://*/Pfr.msl";
+
+            Utils.Current.cn = new EntityConnection(entityBuilder.ToString());
+
             var f = new frmLogin();
             var r = f.ShowDialog();
             if (f.DialogResult == DialogResult.OK)
             {
-                Application.Run(new frmMain());
+                var f1 = new frmMain();
+                f1.Text = "ПФР " + Settings.Default.login + "@" + Settings.Default.database;
+                Application.Run(f1);
             }
         }
     }

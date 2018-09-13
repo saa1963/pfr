@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using pfr.Properties;
 using System.Data.SqlClient;
 using System.Data.Entity.Core.EntityClient;
+using Oracle.ManagedDataAccess.Client;
 
 namespace pfr
 {
@@ -20,22 +21,16 @@ namespace pfr
             InitializeComponent();
         }
 
-        public string Server
+        public string User
         {
-            get { return tbServer.Text; }
-            set { tbServer.Text = value; }
+            get { return tbUser.Text; }
+            set { tbUser.Text = value; }
         }
 
-        public string Database
+        public string Base
         {
-            get { return tbDatabase.Text; }
-            set { tbDatabase.Text = value; }
-        }
-
-        public string Login
-        {
-            get { return tbLogin.Text; }
-            set { tbLogin.Text = value; }
+            get { return tbBase.Text; }
+            set { tbBase.Text = value; }
         }
 
         public string Password
@@ -46,26 +41,30 @@ namespace pfr
 
         private void frmLogin_Load(object sender, EventArgs e)
         {
-            Server = String.IsNullOrWhiteSpace(Settings.Default.server) ? "192.168.20.221" : Settings.Default.server;
-            Database = String.IsNullOrWhiteSpace(Settings.Default.database) ? "pfr" : Settings.Default.database;
-            Login = Settings.Default.login ?? "";
+            //Server = String.IsNullOrWhiteSpace(Settings.Default.server) ? "192.168.20.221" : Settings.Default.server;
+            Base = String.IsNullOrWhiteSpace(Settings.Default.database) ? "odb" : Settings.Default.database;
+            User = Settings.Default.login ?? "";
         }
 
         private void btnOk_Click(object sender, EventArgs e)
         {
             string cnString;
-            if (String.IsNullOrWhiteSpace(Login))
+            if (String.IsNullOrWhiteSpace(User))
             {
                 MessageBox.Show("Не введено имя пользователя");
-                ActiveControl = tbLogin;
+                ActiveControl = tbUser;
                 return;
             }
 
-            cnString = "Data Source=" + Server +
-                ";Initial Catalog=" + Database +
-                ";Persist Security Info=True;User ID=" + Login +
-                ";Password=" + Password;
-            var cn = new SqlConnection(cnString);
+            if (String.IsNullOrWhiteSpace(Base))
+            {
+                MessageBox.Show("Не введено имя базы данных");
+                ActiveControl = tbBase;
+                return;
+            }
+
+            cnString = @"Data Source=" + Base + ";User ID=" + User + ";Password=" + Password;
+            var cn = new OracleConnection(cnString);
             try
             {
                 cn.Open();
@@ -77,82 +76,16 @@ namespace pfr
             }
             cn.Close();
 
+            Utils.Current.OraCn = @"Data Source=" + Base + ";User ID=" + User + ";Password=" + Password;
+            Utils.Current.UserOffice = new OracleBd().UserOffice();
 
-            // Initialize the EntityConnectionStringBuilder.
-            EntityConnectionStringBuilder entityBuilder =
-                new EntityConnectionStringBuilder();
-
-            //Set the provider name.
-            entityBuilder.Provider = "System.Data.SqlClient";
-
-            // Set the provider-specific connection string.
-            entityBuilder.ProviderConnectionString = "Data Source=" + Server +
-                ";Initial Catalog=" + Database +
-                ";Persist Security Info=True;User ID=" + Login +
-                ";Password=" + Password;
-
-            // Set the Metadata location.
-            entityBuilder.Metadata = @"res://*/Pfr.csdl|
-                            res://*/Pfr.ssdl|
-                            res://*/Pfr.msl";
-
-            Utils.Current.cn = new EntityConnection(entityBuilder.ToString());
-
-            Settings.Default.server = Server;
-            Settings.Default.database = Database;
-            Settings.Default.login = Login;
+            Settings.Default.database = Base;
+            Settings.Default.login = User;
             Settings.Default.Save();
 
             DialogResult = System.Windows.Forms.DialogResult.OK;
             Close();
-        }
 
-        private void btnChangePassword_Click(object sender, EventArgs e)
-        {
-            if (String.IsNullOrWhiteSpace(Server))
-            {
-                MessageBox.Show("Не введен сервер.");
-                ActiveControl = tbServer;
-                return;
-            }
-            if (String.IsNullOrWhiteSpace(Database))
-            {
-                MessageBox.Show("Не введено название базы данных.");
-                ActiveControl = tbDatabase;
-                return;
-            }
-            if (String.IsNullOrWhiteSpace(Login))
-            {
-                MessageBox.Show("Не введено имя пользователя.");
-                ActiveControl = tbLogin;
-                return;
-            }
-            var f = new frmChangePassword();
-            if (f.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            {
-                using (var cn1 = new SqlConnection("Data Source=" + Server +
-                ";Initial Catalog=" + Database +
-                ";Persist Security Info=True;User ID=" + Login +
-                ";Password=" + f.OldPassword))
-                {
-                    try
-                    {
-                        cn1.Open();
-                        SqlCommand cmd = new SqlCommand();
-                        cmd.Connection = cn1;
-                        cmd.CommandText =
-                            "ALTER LOGIN " + Login + " WITH PASSWORD = '" + f.NewPassword1 +
-                            "' OLD_PASSWORD = '" + f.OldPassword + "'";
-                        cmd.ExecuteNonQuery();
-                        MessageBox.Show("Пароль изменен");
-                    }
-                    catch (Exception exception)
-                    {
-                        MessageBox.Show("Ошибка доступа к базе данных.\r\n" + exception.Message);
-                        return;
-                    }
-                }
-            }
         }
     }
 }
