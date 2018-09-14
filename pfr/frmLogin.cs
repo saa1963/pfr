@@ -76,12 +76,12 @@ namespace pfr
             }
             cn.Close();
 
-            Utils.Current.OraCn = @"Data Source=" + Base + ";User ID=" + User + ";Password=" + Password;
-            Utils.Current.UserOffice = new OracleBd().UserOffice();
-
             Settings.Default.database = Base;
             Settings.Default.login = User;
             Settings.Default.Save();
+
+            Utils.Current.OraCn = @"Data Source=" + Base + ";User ID=" + User + ";Password=" + Password;
+            Utils.Current.UserOffice = new OracleBd().UserOffice();
 
             DialogResult = System.Windows.Forms.DialogResult.OK;
             Close();

@@ -287,7 +287,7 @@ namespace pfr
                 cn.Open();
                 short numOffice = -1;
                 cmd.Connection = cn;
-                cmd.CommandText = "SELECT iusrbranch FROM USR WHERE UPPER(cusrlogname) = :logname";
+                cmd.CommandText = "SELECT iusrbranch FROM XXI.V_USR WHERE UPPER(cusrlogname) = :logname";
                 cmd.CommandType = System.Data.CommandType.Text;
                 cmd.BindByName = true;
 
