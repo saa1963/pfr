@@ -57,9 +57,9 @@ namespace pfr
                 {
                     cn.Open();
                     var cmd = new OracleCommand(
-                        "select itrnnum from XXI.TRN_MF where DTRNTRAN BETWEEN :dt1 AND :dt2 AND ITRNDOCNUM = :num AND MTRNSUM = :sm", cn);
+                        "select itrnnum from XXI.TRN_MF where DTRNTRAN >= :dt1 AND DTRNTRAN < :dt2 AND ITRNDOCNUM = :num AND MTRNSUM = :sm", cn);
                     cmd.Parameters.Add("dt1", OracleDbType.Date).Value = dtPlat;
-                    cmd.Parameters.Add("dt2", OracleDbType.Date).Value = dtPlat.AddMonths(1);
+                    cmd.Parameters.Add("dt2", OracleDbType.Date).Value = DateTime.Today.AddDays(1);
                     cmd.Parameters.Add("num", OracleDbType.Int64).Value = numPlat;
                     cmd.Parameters.Add("sm", OracleDbType.Decimal).Value = sumPlat;
                     var ob = cmd.ExecuteScalar();
@@ -204,68 +204,77 @@ namespace pfr
                     cn.Open();
 
                     cmd.CommandText = String.Format(
-                            "select itrnnum, dtrntran from XXI.\"trn\" where ctrnaccc = '{0}' and mtrnsumc = {1} " +
+                            "select itrnnum from XXI.TRN_MF where ctrnaccc = '{0}' and mtrnsumc = {1} " +
                                 "and dtrntran >= TO_DATE('{2}', 'DD.MM.YYYY') and dtrntran < TO_DATE('{3}', 'DD.MM.YYYY') and ctrnpurp like '%[Id-{4}]%'",
                             CredAcc, Sum.ToString("F2").Replace(',', '.'), Dt.ToString("dd.MM.yyyy"), Dt.AddDays(1).ToString("dd.MM.yyyy"), IdTrn);
                     cmd.CommandType = System.Data.CommandType.Text;
-
-                    string success = "REG_UNKNOWN_ERROR";
                     cmd.Connection = cn;
-                    cmd.CommandText = "XXI.IDOC_REG.Register";
-                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                    cmd.BindByName = true;
+                    var o = cmd.ExecuteScalar();
+                    if (o == null)
+                    {
+                        string success = "REG_UNKNOWN_ERROR";
+                        cmd.Connection = cn;
+                        cmd.CommandText = "XXI.IDOC_REG.Register";
+                        cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                        cmd.BindByName = true;
 
-                    // Возвращаемое значение
-                    var Success = new OracleParameter("Success", OracleDbType.Varchar2, 4000);
-                    Success.Direction = System.Data.ParameterDirection.ReturnValue;
-                    cmd.Parameters.Add(Success);
-                    // Сообщение об ошибке для возврата
-                    var ErrorMsg = new OracleParameter("ErrorMsg", OracleDbType.Varchar2, 4000);
-                    ErrorMsg.Direction = System.Data.ParameterDirection.Output;
-                    cmd.Parameters.Add(ErrorMsg);
-                    // Тип операции BO1
-                    var OpType = new OracleParameter("OpType", OracleDbType.Int16);
-                    OpType.Direction = System.Data.ParameterDirection.Input;
-                    OpType.Value = 1;
-                    cmd.Parameters.Add(OpType);
-                    // Дата регистрации
-                    cmd.Parameters.Add("RegDate", OracleDbType.Date, System.Data.ParameterDirection.Input).Value = Dt;
-                    // Счет дебета
-                    cmd.Parameters.Add("PayerAcc", OracleDbType.Varchar2, 25, System.Data.ParameterDirection.Input).Value = DebAcc;
-                    // Счет кредита
-                    cmd.Parameters.Add("RecipientAcc", OracleDbType.Varchar2, 25, System.Data.ParameterDirection.Input).Value = CredAcc;
-                    // Сумма, если документ нац.вал. то это сумма в рублях
-                    cmd.Parameters.Add("Summa", OracleDbType.Decimal, System.Data.ParameterDirection.Input).Value = Sum;
-                    // Дата документа
-                    cmd.Parameters.Add("DocDate", OracleDbType.Date, System.Data.ParameterDirection.Input).Value = Dt;
-                    // Назначение платежа
-                    cmd.Parameters.Add("Purpose", OracleDbType.Varchar2, 1024, System.Data.ParameterDirection.Input).Value = Info;
-                    // Номер документа
-                    cmd.Parameters.Add("DocNum", OracleDbType.Int64, System.Data.ParameterDirection.Input).Value = 2;
-                    // Номер пачки
-                    cmd.Parameters.Add("BatNum", OracleDbType.Int16, System.Data.ParameterDirection.Input).Value = 0;
-                    // Дата платежа (валютирования)
-                    cmd.Parameters.Add("ValDate", OracleDbType.Date, System.Data.ParameterDirection.Input).Value = Dt;
-                    // Тип операции 2 порядка
-                    cmd.Parameters.Add("SubOpType", OracleDbType.Int16, System.Data.ParameterDirection.Input).Value = 1;
-                    // Валюта документа (суммы)
-                    cmd.Parameters.Add("cDocCurrency", OracleDbType.Char, 3, System.Data.ParameterDirection.Input).Value = "RUR";
-                    // Вид операции
-                    cmd.Parameters.Add("cVO", OracleDbType.Varchar2, 2, System.Data.ParameterDirection.Input).Value = "17";
-                    // Владелец документа
-                    cmd.Parameters.Add("cIDOpen", OracleDbType.Varchar2, 4000, System.Data.ParameterDirection.Input).Value = User;
-                    cmd.ExecuteNonQuery();
-                    success = ((Oracle.ManagedDataAccess.Types.OracleString)cmd.Parameters["Success"].Value).ToString().Trim();
-                    var eMsg = ((Oracle.ManagedDataAccess.Types.OracleString)cmd.Parameters["ErrorMsg"].Value).ToString().Trim();
-                    rt = (success == "Ok");
-                    if (!rt)
-                        logger.Error(eMsg);
+                        // Возвращаемое значение
+                        var Success = new OracleParameter("Success", OracleDbType.Varchar2, 4000);
+                        Success.Direction = System.Data.ParameterDirection.ReturnValue;
+                        cmd.Parameters.Add(Success);
+                        // Сообщение об ошибке для возврата
+                        var ErrorMsg = new OracleParameter("ErrorMsg", OracleDbType.Varchar2, 4000);
+                        ErrorMsg.Direction = System.Data.ParameterDirection.Output;
+                        cmd.Parameters.Add(ErrorMsg);
+                        // Тип операции BO1
+                        var OpType = new OracleParameter("OpType", OracleDbType.Int16);
+                        OpType.Direction = System.Data.ParameterDirection.Input;
+                        OpType.Value = 1;
+                        cmd.Parameters.Add(OpType);
+                        // Дата регистрации
+                        cmd.Parameters.Add("RegDate", OracleDbType.Date, System.Data.ParameterDirection.Input).Value = Dt;
+                        // Счет дебета
+                        cmd.Parameters.Add("PayerAcc", OracleDbType.Varchar2, 25, System.Data.ParameterDirection.Input).Value = DebAcc;
+                        // Счет кредита
+                        cmd.Parameters.Add("RecipientAcc", OracleDbType.Varchar2, 25, System.Data.ParameterDirection.Input).Value = CredAcc;
+                        // Сумма, если документ нац.вал. то это сумма в рублях
+                        cmd.Parameters.Add("Summa", OracleDbType.Decimal, System.Data.ParameterDirection.Input).Value = Sum;
+                        // Дата документа
+                        cmd.Parameters.Add("DocDate", OracleDbType.Date, System.Data.ParameterDirection.Input).Value = Dt;
+                        // Назначение платежа
+                        cmd.Parameters.Add("Purpose", OracleDbType.Varchar2, 1024, System.Data.ParameterDirection.Input).Value = Info;
+                        // Номер документа
+                        cmd.Parameters.Add("DocNum", OracleDbType.Int64, System.Data.ParameterDirection.Input).Value = 2;
+                        // Номер пачки
+                        cmd.Parameters.Add("BatNum", OracleDbType.Int16, System.Data.ParameterDirection.Input).Value = 0;
+                        // Дата платежа (валютирования)
+                        cmd.Parameters.Add("ValDate", OracleDbType.Date, System.Data.ParameterDirection.Input).Value = Dt;
+                        // Тип операции 2 порядка
+                        cmd.Parameters.Add("SubOpType", OracleDbType.Int16, System.Data.ParameterDirection.Input).Value = 1;
+                        // Валюта документа (суммы)
+                        cmd.Parameters.Add("cDocCurrency", OracleDbType.Char, 3, System.Data.ParameterDirection.Input).Value = "RUR";
+                        // Вид операции
+                        cmd.Parameters.Add("cVO", OracleDbType.Varchar2, 2, System.Data.ParameterDirection.Input).Value = "17";
+                        // Владелец документа
+                        cmd.Parameters.Add("cIDOpen", OracleDbType.Varchar2, 4000, System.Data.ParameterDirection.Input).Value = User;
+                        cmd.ExecuteNonQuery();
+                        success = ((Oracle.ManagedDataAccess.Types.OracleString)cmd.Parameters["Success"].Value).ToString().Trim();
+                        var eMsg = ((Oracle.ManagedDataAccess.Types.OracleString)cmd.Parameters["ErrorMsg"].Value).ToString().Trim();
+                        rt = (success == "Ok");
+                        if (!rt)
+                            logger.Error(eMsg);
+                    }
+                    else
+                    {
+                        logger.Error(String.Format("Ошибка при регистрации документа. Этот документ уже существует. Дебет {0} Кредит {1} на сумму {2}", DebAcc, CredAcc, Sum));
+                        rt = false;
+                    }
                 }
                 return rt;
             }
             catch(Exception e)
             {
-                throw new SaaException(String.Format("Ошибка при регистрации документа. Дебет {} Кредит {} на сумму {}", DebAcc, CredAcc, Sum), e);
+                throw new SaaException(String.Format("Ошибка при регистрации документа. Дебет {0} Кредит {1} на сумму {2}", DebAcc, CredAcc, Sum), e);
             }
         }
 

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -81,26 +82,36 @@ namespace pfr
             {
                 return;
             }
-            var savedTrn = new List<int>();
+            var savedTrn = new Dictionary<int, List<int>>();
             var msg = new clsProcessingInput().DoIt(savedTrn);
-            foreach (var trn in savedTrn)
+            MessageBox.Show(msg);
+            int countTotal = 0;
+            int countTotalReg = 0;
+            foreach (var opisId in savedTrn)
             {
-                var o = ctx.TrnSet.Find(trn);
-                if (o != null)
+                int countDoc = 0;
+                var opis = ctx.OpisSet.Find(opisId.Key);
+                countTotal += opis.Kol;
+                foreach (var trnId in opisId.Value)
                 {
+                    var o = ctx.TrnSet.Find(trnId);
                     var ar = (from ds in ctx.DoSet where ds.Kod == o.DOffice select ds).ToArray()[0];
                     var DebAcc = ar.Acc47422;
                     var OdbUser = ar.Login;
-                    if (new OracleBd().RegisterDoc(DebAcc: DebAcc, CredAcc: o.Acc, Sum: o.Sm, Dt: o.DateReg, User: OdbUser,
+                    if (new OracleBd().RegisterDoc(DebAcc: DebAcc, CredAcc: o.Acc, Sum: o.Sm, Dt: o.DateReg.Date, User: OdbUser,
                                 Info: String.Format("Переч.пенсии из ПФР за {0} {1}г. [Id-{2}]", Utils.months[o.SpisSet.mec - 1],
                                 o.SpisSet.god, o.Id), IdTrn: o.Id))
                     {
                         logger.Info(String.Format("Зарегистрирован платежный ордер. Дебет {0} Кредит {1} {2} на сумму {3}", DebAcc, o.Acc, o.Fio, o.Sm));
+                        countDoc++;
                     }
                 }
+                opis.KolObrab1 = countDoc;
+                countTotalReg += countDoc;
             }
+            ctx.SaveChanges();
+            MessageBox.Show(String.Format("Зарегистрировано в Инверсии {0} документов из {1}", countTotalReg, countTotal));
             RefreshData1();
-            MessageBox.Show(msg);
         }
 
         private void mnuOtchet_Click(object sender, EventArgs e)

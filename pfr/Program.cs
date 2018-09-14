@@ -19,12 +19,17 @@ namespace pfr
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            //var Server = "192.168.20.221";
-            var Server = "(localdb)\\MSSQLLocalDB";
+            var Server = "192.168.20.221";
+            var Password = "zxc";
+
+            //var Server = "(localdb)\\MSSQLLocalDB";
+            //var Password = "1";
+
+
             var Database = "pfr";
             var Login = "sa";
-            //var Password = "zxc";
-            var Password = "1";
+            
+            
 
             // Initialize the EntityConnectionStringBuilder.
             EntityConnectionStringBuilder entityBuilder =

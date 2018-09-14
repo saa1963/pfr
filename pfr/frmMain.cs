@@ -103,6 +103,7 @@ namespace pfr
                             o.SpisSet.god, o.Id), IdTrn: o.Id);
                         if (rt)
                         {
+                            logger.Info(String.Format("Зарегистрирован платежный ордер. Дебет {0} Кредит {1} {2} на сумму {3}", DebAcc, o.Acc, o.Fio, o.Sm));
                             i++;
                             sm0 += o.Sm;
                         }

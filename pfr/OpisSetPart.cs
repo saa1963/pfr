@@ -14,7 +14,8 @@ namespace pfr
             set
             {
                 KolObrab = value;
-                PropertyChanged(this, new PropertyChangedEventArgs("KolObrab1"));
+                if (PropertyChanged != null)
+                    PropertyChanged(this, new PropertyChangedEventArgs("KolObrab1"));
             }
         }
 
