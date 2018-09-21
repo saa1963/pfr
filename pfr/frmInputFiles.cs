@@ -87,6 +87,8 @@ namespace pfr
             MessageBox.Show(msg);
             int countTotal = 0;
             int countTotalReg = 0;
+            int countOpis = 0;
+            int countOpisTotal = savedTrn.Count;
             foreach (var opisId in savedTrn)
             {
                 int countDoc = 0;
@@ -102,15 +104,29 @@ namespace pfr
                                 Info: String.Format("Переч.пенсии из ПФР за {0} {1}г. [Id-{2}]", Utils.months[o.SpisSet.mec - 1],
                                 o.SpisSet.god, o.Id), IdTrn: o.Id))
                     {
+                        o.DFakt = DateTime.Today;
+                        o.KodZachisl = "31";
                         logger.Info(String.Format("Зарегистрирован платежный ордер. Дебет {0} Кредит {1} {2} на сумму {3}", DebAcc, o.Acc, o.Fio, o.Sm));
                         countDoc++;
                     }
                 }
                 opis.KolObrab1 = countDoc;
                 countTotalReg += countDoc;
+                if (opis.Kol == opis.KolObrab)
+                {
+                    new clsProcessing().Otchet0(opis);
+                    countOpis++;
+                    logger.Info(String.Format("По описи {0} сформирован отчет", opis.FileName));
+                }
+                else
+                {
+                    var message = String.Format("По описи {0} отчет не сформирован, не все платежи проведены", opis.FileName);
+                    logger.Warn(message);
+                }
             }
             ctx.SaveChanges();
-            MessageBox.Show(String.Format("Зарегистрировано в Инверсии {0} документов из {1}", countTotalReg, countTotal));
+            MessageBox.Show(String.Format("Зарегистрировано в Инверсии {0} документов из {1}\r\nСформировано {2} из {3} описей", 
+                countTotalReg, countTotal, countOpis, countOpisTotal));
             RefreshData1();
         }
 
