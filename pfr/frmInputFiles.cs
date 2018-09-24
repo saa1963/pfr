@@ -125,7 +125,7 @@ namespace pfr
                 }
             }
             ctx.SaveChanges();
-            MessageBox.Show(String.Format("Зарегистрировано в Инверсии {0} документов из {1}\r\nСформировано {2} из {3} описей", 
+            MessageBox.Show(String.Format("Зарегистрировано в Инверсии {0} документов из {1}\r\nСформировано {2} из {3} отчетов", 
                 countTotalReg, countTotal, countOpis, countOpisTotal));
             RefreshData1();
         }
