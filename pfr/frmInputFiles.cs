@@ -112,6 +112,7 @@ namespace pfr
                 }
                 opis.KolObrab1 = countDoc;
                 countTotalReg += countDoc;
+                ctx.SaveChanges();
                 if (opis.Kol == opis.KolObrab)
                 {
                     new clsProcessing().Otchet0(opis);
