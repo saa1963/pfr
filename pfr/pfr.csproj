@@ -229,6 +229,7 @@
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>Pfr.Designer.cs</LastGenOutput>
     </EntityDeploy>
+    <None Include="51-СоглФормат обмена с ООДП-05_10_2018 %28уд+номин%29.doc" />
     <None Include="NLog.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
