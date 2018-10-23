@@ -45,10 +45,11 @@
             // 
             // tbDate
             // 
-            this.tbDate.Format = System.Windows.Forms.DateTimePickerFormat.Short;
+            this.tbDate.CustomFormat = "dd.MM.yyyy HH:mm";
+            this.tbDate.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
             this.tbDate.Location = new System.Drawing.Point(30, 40);
             this.tbDate.Name = "tbDate";
-            this.tbDate.Size = new System.Drawing.Size(94, 20);
+            this.tbDate.Size = new System.Drawing.Size(145, 20);
             this.tbDate.TabIndex = 1;
             // 
             // btnOk

@@ -193,8 +193,9 @@ namespace pfr
             }
         }
 
-        public bool RegisterDoc(string DebAcc, string CredAcc, decimal Sum, DateTime Dt, string User, string Info, int IdTrn)
+        public bool RegisterDoc(string DebAcc, string CredAcc, decimal Sum, DateTime Dt, string User, string Info, int IdTrn, bool isSendtoXXI)
         {
+            if (!isSendtoXXI) return true;
             try
             {
                 bool rt = false;

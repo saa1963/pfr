@@ -20,7 +20,7 @@ namespace pfr
 
         public DateTime Dt 
         {
-            get { return tbDate.Value.Date; }
+            get { return tbDate.Value; }
             set { tbDate.Value = value; }
         }
 

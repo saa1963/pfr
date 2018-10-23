@@ -100,7 +100,7 @@ namespace pfr
                         var OdbUser = ar.Login;
                         var rt = new OracleBd().RegisterDoc(DebAcc: DebAcc, CredAcc: o.Acc, Sum: o.Sm, Dt: f.Dt, User: OdbUser, 
                             Info: String.Format("Переч.пенсии из ПФР за {0} {1}г. [Id-{2}]", Utils.months[o.SpisSet.mec - 1], 
-                            o.SpisSet.god, o.Id), IdTrn: o.Id);
+                            o.SpisSet.god, o.Id), IdTrn: o.Id, isSendtoXXI: true);
                         if (rt)
                         {
                             logger.Info(String.Format("Зарегистрирован платежный ордер. Дебет {0} Кредит {1} {2} на сумму {3}", DebAcc, o.Acc, o.Fio, o.Sm));

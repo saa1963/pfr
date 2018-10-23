@@ -76,14 +76,14 @@ namespace pfr
             dgv1.DataSource = bs1;
         }
 
-        private void mnuVx_Click(object sender, EventArgs e)
+        private void AutoReceive(bool isSendtoXXI, DateTime dt)
         {
             if (!Utils.Current.СоздатьПапкиДляВводаВывода())
             {
                 return;
             }
             var savedTrn = new Dictionary<int, List<int>>();
-            var msg = new clsProcessingInput().DoIt(savedTrn);
+            var msg = new clsProcessingInput().DoIt(savedTrn, isSendtoXXI, dt);
             MessageBox.Show(msg);
             int countTotal = 0;
             int countTotalReg = 0;
@@ -102,10 +102,10 @@ namespace pfr
                     var OdbUser = ar.Login;
                     if (new OracleBd().RegisterDoc(DebAcc: DebAcc, CredAcc: o.Acc, Sum: o.Sm, Dt: o.DateReg.Date, User: OdbUser,
                                 Info: String.Format("Переч.пенсии из ПФР за {0} {1}г. [Id-{2}]", Utils.months[o.SpisSet.mec - 1],
-                                o.SpisSet.god, o.Id), IdTrn: o.Id))
+                                o.SpisSet.god, o.Id), IdTrn: o.Id, isSendtoXXI: isSendtoXXI))
                     {
-                        o.DFakt = DateTime.Today;
-                        o.KodZachisl = "31";
+                        o.DFakt = dt.Date;
+                        o.KodZachisl = "З1";
                         logger.Info(String.Format("Зарегистрирован платежный ордер. Дебет {0} Кредит {1} {2} на сумму {3}", DebAcc, o.Acc, o.Fio, o.Sm));
                         countDoc++;
                     }
@@ -115,7 +115,7 @@ namespace pfr
                 ctx.SaveChanges();
                 if (opis.Kol == opis.KolObrab)
                 {
-                    new clsProcessing().Otchet0(opis);
+                    new clsProcessing().Otchet0(opis, dt);
                     countOpis++;
                     logger.Info(String.Format("По описи {0} сформирован отчет", opis.FileName));
                 }
@@ -126,9 +126,14 @@ namespace pfr
                 }
             }
             ctx.SaveChanges();
-            MessageBox.Show(String.Format("Зарегистрировано в Инверсии {0} документов из {1}\r\nСформировано {2} из {3} отчетов", 
+            MessageBox.Show(String.Format("Зарегистрировано в Инверсии {0} документов из {1}\r\nСформировано {2} из {3} отчетов",
                 countTotalReg, countTotal, countOpis, countOpisTotal));
             RefreshData1();
+        }
+
+        private void mnuVx_Click(object sender, EventArgs e)
+        {
+            AutoReceive(true, DateTime.Now);
         }
 
         private void mnuOtchet_Click(object sender, EventArgs e)
@@ -146,7 +151,7 @@ namespace pfr
                     "", MessageBoxButtons.YesNo) 
                     != System.Windows.Forms.DialogResult.Yes) return;
             }
-            new clsProcessing().Otchet0(o);
+            new clsProcessing().Otchet0(o, DateTime.Now);
             ctx.SaveChanges();
             RefreshData2();
             MessageBox.Show("Отчет сформирован");
@@ -323,6 +328,24 @@ namespace pfr
                 logger.Error(e1.ToString());
                 MessageBox.Show("Ошибка копирования ведомственной информации. " + Utils.Current.LogMessage);
             }
+        }
+
+        private void приемВходящихФайловИзПФРбезОтправкиВXXIToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var f = new frmGetDate(DateTime.Now);
+            if (f.ShowDialog() == DialogResult.OK)
+            {
+                AutoReceive(false, f.Dt);
+            }
+        }
+
+        private void удалитьМассивToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (bs1.Current == null) return;
+            OpisSet o = (OpisSet)bs1.Current;
+            ctx.OpisSet.Remove(o);
+            ctx.SaveChanges();
+            RefreshData1();
         }
     }
 

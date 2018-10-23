@@ -40,7 +40,7 @@ namespace pfr
             return true;
         }
 
-        public string СформироватьПоложительныйОтвет(pfr.Xsd.ФайлПФР Опись, List<pfr.Xsd1.ФайлПФР> Списки)
+        public string СформироватьПоложительныйОтвет(pfr.Xsd.ФайлПФР Опись, List<pfr.Xsd1.ФайлПФР> Списки, DateTime dt)
         {
             int seq = Utils.Current.GetSequence("OUT");
             using (var ctx = new pfrEntities1(Utils.Current.cn))
@@ -91,7 +91,7 @@ namespace pfr
                                 wr.WriteElementString("Месяц", Опись.ПачкаВходящихДокументов.ВХОДЯЩАЯ_ОПИСЬ.Месяц);
                                 wr.WriteElementString("Год", Опись.ПачкаВходящихДокументов.ВХОДЯЩАЯ_ОПИСЬ.Год);
                                 wr.WriteElementString("ИсходящийНомер", seq.ToString(new String('0', 10)));
-                                wr.WriteElementString("ДатаФормирования", DateTime.Now.Date.ToString("dd.MM.yyyy"));
+                                wr.WriteElementString("ДатаФормирования", dt.ToString("dd.MM.yyyy"));
                                 wr.WriteElementString("Должность", Settings.Default.Dolzh);
                                 wr.WriteElementString("Руководитель", Settings.Default.Ruk);
                             wr.WriteEndElement();
@@ -121,8 +121,8 @@ namespace pfr
                                     wr.WriteElementString("СистемныйНомерМассива", Опись.ПачкаВходящихДокументов.ВХОДЯЩАЯ_ОПИСЬ.СистемныйНомерМассива);
                                 wr.WriteEndElement();
                                 wr.WriteElementString("Решение", "ПРИНЯТО");
-                                wr.WriteElementString("ДатаВыдачиДокумента", DateTime.Now.Date.ToString("dd.MM.yyyy"));
-                                wr.WriteElementString("ВремяФормирования", DateTime.Now.ToString("HH:mm"));
+                                wr.WriteElementString("ДатаВыдачиДокумента", dt.ToString("dd.MM.yyyy"));
+                                wr.WriteElementString("ВремяФормирования", dt.ToString("HH:mm"));
                             wr.WriteEndElement();
                         wr.WriteEndElement();
                     wr.WriteEndElement();
@@ -141,23 +141,23 @@ namespace pfr
             return ver.ToString();
         }
 
-        internal void Otchet0(OpisSet o)
+        internal void Otchet0(OpisSet o, DateTime dt)
         {
             string fname;
             foreach (var spis in o.SpisSet)
             {
-                fname = Otchet00(spis);
+                fname = Otchet00(spis, dt);
                 spis.FileName1 = fname;
                 spis.Xml1 = File.ReadAllText(Path.Combine(Settings.Default.PathInputOutput, clsConst.FolderToPFR, fname), 
                     Encoding.GetEncoding(1251));
             }
-            fname = Otchet01(o);
+            fname = Otchet01(o, dt);
             o.FileName2 = fname;
             o.Xml2 = File.ReadAllText(Path.Combine(Settings.Default.PathInputOutput, clsConst.FolderToPFR, fname),
                     Encoding.GetEncoding(1251));
         }
 
-        private string Otchet01(OpisSet o)
+        private string Otchet01(OpisSet o, DateTime dt)
         {
             XmlNode vx;
             XPathNavigator nav;
@@ -217,7 +217,7 @@ namespace pfr
                                 nav = vx.CreateNavigator();
                                 wr.WriteNode(nav, false);
                                 wr.WriteElementString("ИсходящийНомер", isx.ToString(new String('0', 10)));
-                                wr.WriteElementString("ДатаФормирования", DateTime.Now.ToString("dd.MM.yyyy"));
+                                wr.WriteElementString("ДатаФормирования", dt.ToString("dd.MM.yyyy"));
                                 wr.WriteElementString("Должность", Settings.Default.Dolzh);
                                 wr.WriteElementString("Руководитель", Settings.Default.Ruk);
                             wr.WriteEndElement();
@@ -242,17 +242,17 @@ namespace pfr
             }
         }
 
-        private string Otchet00(SpisSet spis)
+        private string Otchet00(SpisSet spis, DateTime dt)
         {
             XmlNode vx;
             XPathNavigator nav;
             int isx = Utils.Current.GetSequence("OUT");
+            
             using (var ctx = new pfrEntities1(Utils.Current.cn))
             {
                 var spisXml = new XmlDocument();
                 spisXml.LoadXml(spis.Xml);
-                
-               
+
                 StringBuilder sb = new StringBuilder(spis.FileName.Trim());
                 sb.Remove(0, 3).Insert(0, "OUT");
                 sb.Remove(60, 4).Insert(60, "OZAC");
@@ -329,7 +329,7 @@ namespace pfr
                                     wr.WriteElementString("СуммаНеЗачисленоПоФилиалу", smnz.ToString("F2").Replace(',', '.'));
                                     wr.WriteElementString("КоличествоПолучателейНеЗачислено", kolnz.ToString());
                                     wr.WriteElementString("ИсходящийНомер", isx.ToString(new String('0', 10)));
-                                    wr.WriteElementString("ДатаФормирования", DateTime.Now.ToString("dd.MM.yyyy"));
+                                    wr.WriteElementString("ДатаФормирования", dt.ToString("dd.MM.yyyy"));
                                     wr.WriteElementString("Должность", Settings.Default.Dolzh);
                                     wr.WriteElementString("Руководитель", Settings.Default.Ruk);
                                 wr.WriteEndElement();
@@ -363,12 +363,12 @@ namespace pfr
                                             wr.WriteElementString("СуммаКдоставке", trn.Sm.ToString("F2").Replace(',', '.'));
                                             wr.WriteElementString("ДатаФактическойДоставки", trn.DFakt == null ? "" : trn.DFakt.Value.ToString("dd.MM.yyyy"));
                                             wr.WriteElementString("КодЗачисления", trn.KodZachisl);
-                                            wr.WriteElementString("ДатаВыдачиДокумента", DateTime.Now.ToString("dd.MM.yyyy"));
+                                            wr.WriteElementString("ДатаВыдачиДокумента", dt.ToString("dd.MM.yyyy"));
                                         wr.WriteEndElement();
                                     }
                                     wr.WriteElementString("СуммаПоФилиалу", spis.Sm.ToString("F2").Replace(',', '.'));
                                     wr.WriteElementString("КоличествоПолучателей", spis.TrnSet.Count.ToString());
-                                    wr.WriteElementString("ДатаВыдачиДокумента", DateTime.Now.ToString("dd.MM.yyyy"));
+                                    wr.WriteElementString("ДатаВыдачиДокумента", dt.ToString("dd.MM.yyyy"));
                                     wr.WriteElementString("СуммаЗачислено", smz.ToString("F2").Replace(',', '.'));
                                     wr.WriteElementString("КоличествоПолучателейЗачислено", kolz.ToString());
                                     wr.WriteElementString("СуммаНеЗачислено", smnz.ToString("F2").Replace(',', '.'));
