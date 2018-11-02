@@ -144,17 +144,24 @@ namespace pfr
         internal void Otchet0(OpisSet o, DateTime dt)
         {
             string fname;
+            FileInfo fi;
             foreach (var spis in o.SpisSet)
             {
                 fname = Otchet00(spis, dt);
-                spis.FileName1 = fname;
-                spis.Xml1 = File.ReadAllText(Path.Combine(Settings.Default.PathInputOutput, clsConst.FolderToPFR, fname), 
-                    Encoding.GetEncoding(1251));
+                fi = new FileInfo(fname);
+                File.Copy(fname,
+                    Path.Combine(Settings.Default.PathInputOutput, clsConst.FolderToPFR, clsConst.FolderArchive, fi.Name),
+                    true);
+                spis.FileName1 = fi.Name;
+                spis.Xml1 = File.ReadAllText(fname, Encoding.GetEncoding(1251));
             }
             fname = Otchet01(o, dt);
-            o.FileName2 = fname;
-            o.Xml2 = File.ReadAllText(Path.Combine(Settings.Default.PathInputOutput, clsConst.FolderToPFR, fname),
-                    Encoding.GetEncoding(1251));
+            fi = new FileInfo(fname);
+            File.Copy(fname,
+                                Path.Combine(Settings.Default.PathInputOutput, clsConst.FolderToPFR, clsConst.FolderArchive, fi.Name),
+                                true);
+            o.FileName2 = fi.Name;
+            o.Xml2 = File.ReadAllText(fname, Encoding.GetEncoding(1251));
         }
 
         private string Otchet01(OpisSet o, DateTime dt)
@@ -238,7 +245,7 @@ namespace pfr
                     wr.WriteEndElement();
                     wr.WriteEndDocument();
                 }
-                return sb.ToString();
+                return fname;
             }
         }
 
@@ -378,7 +385,7 @@ namespace pfr
                         wr.WriteEndElement();
                     wr.WriteEndDocument();
                 }
-                return sb.ToString();
+                return fname;
             }
         }
     }

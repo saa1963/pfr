@@ -83,7 +83,7 @@ namespace pfr
                 return;
             }
             var savedTrn = new Dictionary<int, List<int>>();
-            var msg = new clsProcessingInput().DoIt(savedTrn, isSendtoXXI, dt);
+            var msg = new clsProcessingInput().DoIt(savedTrn, dt);
             MessageBox.Show(msg);
             int countTotal = 0;
             int countTotalReg = 0;
@@ -123,6 +123,10 @@ namespace pfr
                 {
                     var message = String.Format("По описи {0} отчет не сформирован, не все платежи проведены", opis.FileName);
                     logger.Warn(message);
+                }
+                foreach (var spis in opis.SpisSet)
+                {
+                    SaveDeptInfo(spis);
                 }
             }
             ctx.SaveChanges();
@@ -301,7 +305,7 @@ namespace pfr
                             }
                             else
                             {
-                                message = String.Format("Поступление на счет {0} {1} на сумму {3} не проведено в Инверсии. Обработка прервана.",
+                                message = String.Format("Поступление на счет {0} {1} на сумму {2} не проведено в Инверсии. Обработка прервана.",
                                     new object[] { trn.Acc, trn.Fio, trn.Sm });
                                 MessageBox.Show(message);
                                 throw new SaaException(message);
@@ -320,6 +324,44 @@ namespace pfr
                 }
             }
             catch(SaaException e1)
+            {
+                logger.Error(e1.ToString());
+            }
+            catch (Exception e1)
+            {
+                logger.Error(e1.ToString());
+                MessageBox.Show("Ошибка копирования ведомственной информации. " + Utils.Current.LogMessage);
+            }
+        }
+
+        private void SaveDeptInfo(SpisSet spis)
+        {
+            string message;
+            DateTime dfakt = DateTime.MinValue;
+            int itrnnum = -1;
+            try
+            {
+                var or = new OracleBd();
+                foreach (var trn in spis.TrnSet)
+                {
+                    if (or.ExistTransaction(trn.Acc, trn.Sm, trn.DateReg.Date, trn.Id, ref dfakt, ref itrnnum))
+                    {
+                        logger.Info(String.Format("Копирование вед.информации для платежа дата: {0} фио: {1} счет: {2} сумма: {3}",
+                            trn.DateReg.Date, trn.Fio, trn.Acc, trn.Sm));
+                        or.AddVedInform(spis.ITrnNum.Value, itrnnum);
+                    }
+                    else
+                    {
+                        message = String.Format("Поступление на счет {0} {1} на сумму {2} не проведено в Инверсии. Обработка прервана.",
+                            new object[] { trn.Acc, trn.Fio, trn.Sm });
+                        MessageBox.Show(message);
+                        throw new SaaException(message);
+                    }
+                }
+                message = String.Format("Ведомственная информация для платежей из файла {0} записана.", spis.FileName);
+                logger.Info(message);
+            }
+            catch (SaaException e1)
             {
                 logger.Error(e1.ToString());
             }

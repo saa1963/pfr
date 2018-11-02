@@ -103,7 +103,7 @@ namespace pfr
             {
                 Directory.CreateDirectory(Path.Combine(path, clsConst.FolderFromPFR, clsConst.FolderArchive));
                 Directory.CreateDirectory(Path.Combine(path, clsConst.FolderFromPFR, clsConst.FolderBad));
-                Directory.CreateDirectory(Path.Combine(path, clsConst.FolderToPFR));
+                Directory.CreateDirectory(Path.Combine(path, clsConst.FolderToPFR, clsConst.FolderArchive));
                 return true;
             }
             catch

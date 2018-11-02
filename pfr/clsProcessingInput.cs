@@ -15,7 +15,7 @@ namespace pfr
     internal class clsProcessingInput
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
-        public string DoIt(Dictionary<int, List<int>> savedTrn, bool isSendtoXXI, DateTime dt)
+        public string DoIt(Dictionary<int, List<int>> savedTrn, DateTime dt)
         {
             int kolisx = 0, kolvx = 0;
             string doffice = null; ;
@@ -50,16 +50,13 @@ namespace pfr
                             var numPlat = Int32.Parse(Список.ПачкаВходящихДокументов.ВХОДЯЩАЯ_ОПИСЬ.НомерПлатежногоПоручения);
                             var sumPlat = Список.ПачкаВходящихДокументов.ВХОДЯЩАЯ_ОПИСЬ.СуммаПоЧастиМассива;
                             int idPlat = 0;
-                            if (isSendtoXXI)
+                            if ((idPlat = new OracleBd().ExistPlat(dtPlat, numPlat, sumPlat)) == 0)
                             {
-                                if ((idPlat = new OracleBd().ExistPlat(dtPlat, numPlat, sumPlat)) == 0)
-                                {
-                                    var message = String.Format("Для файла списка {0} не найдена платежка № {1} с датой между {2} и {3} на сумму {4}. " +
-                                        "Списки по описи {5} не обработаны. Попробуйте повторно обработать их после проведения платежа в Инверсии.",
-                                        new FileInfo(ИмяФайлаСписокНаЗачисление).Name, numPlat, dtPlat, dtPlat.AddDays(4), sumPlat, new FileInfo(ИмяФайлаОписьНаЗачисление).Name);
-                                    MessageBox.Show(message);
-                                    throw new ExceptionNotFindPlat(message);
-                                }
+                                var message = String.Format("Для файла списка {0} не найдена платежка № {1} с датой между {2} и {3} на сумму {4}. " +
+                                    "Списки по описи {5} не обработаны. Попробуйте повторно обработать их после проведения платежа в Инверсии.",
+                                    new FileInfo(ИмяФайлаСписокНаЗачисление).Name, numPlat, dtPlat, dtPlat.AddDays(4), sumPlat, new FileInfo(ИмяФайлаОписьНаЗачисление).Name);
+                                MessageBox.Show(message);
+                                throw new ExceptionNotFindPlat(message);
                             }
                             auxDict.Add(Список.ИмяФайла, idPlat);
                             kolvx++;
@@ -138,6 +135,10 @@ namespace pfr
                             }
                             kolisx++;
                             var fname1 = new clsProcessing().СформироватьПоложительныйОтвет(Опись, Списки, dt);
+                            var fi = new FileInfo(fname1);
+                            File.Copy(fname1, 
+                                Path.Combine(Settings.Default.PathInputOutput, clsConst.FolderToPFR, clsConst.FolderArchive, fi.Name), 
+                                true);
                             o.FileName1 = new FileInfo(fname1).Name;
                             o.Xml1 = File.ReadAllText(fname1, Encoding.GetEncoding(1251));
                             ctx.SaveChanges();
