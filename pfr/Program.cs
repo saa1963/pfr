@@ -10,6 +10,7 @@ namespace pfr
 {
     static class Program
     {
+        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
@@ -18,6 +19,7 @@ namespace pfr
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+            
 
             var Server = "192.168.20.221";
             var Password = "zxc";
