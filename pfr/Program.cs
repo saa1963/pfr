@@ -24,7 +24,7 @@ namespace pfr
             var Server = "192.168.20.221";
             var Password = "zxc";
 
-            //var Server = "(localdb)\\MSSQLLocalDB";
+            //var Server = "127.0.0.1";
             //var Password = "1";
 
 

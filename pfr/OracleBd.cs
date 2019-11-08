@@ -87,7 +87,9 @@ namespace pfr
                     new OracleConnection(Utils.Current.OraCn))
                 {
                     cn.Open();
+#pragma warning disable CA2100 // Review SQL queries for security vulnerabilities
                     var cmd = new OracleCommand(String.Format("select iaccotd from XXI.ACC_MF where caccacc = '{0}' and caccprizn = 'О'", acc), cn);
+#pragma warning restore CA2100 // Review SQL queries for security vulnerabilities
                     using (var dr = cmd.ExecuteReader())
                     {
                         if (dr.Read())
@@ -113,6 +115,53 @@ namespace pfr
             return false;
         }
 
+        internal int CheckMir(string acc)
+        {
+            int rt;
+            if (acc.Substring(0, 5) != "40817") return 0;
+            try
+            {
+                OracleCommand cmd = new OracleCommand();
+                using (var cn = new OracleConnection(Utils.Current.OraCn))
+                {
+                    cn.Open();
+                    cmd.Connection = cn;
+                    cmd.CommandText = "XXI.BSV.get_CardMir_Acc";
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                    cmd.BindByName = true;
+
+                    // Возвращаемое значение
+                    var Success = new OracleParameter("Success", OracleDbType.Decimal);
+                    Success.Direction = System.Data.ParameterDirection.ReturnValue;
+                    cmd.Parameters.Add(Success);
+
+                    // Сообщение об ошибке для возврата
+                    var ErrorMsg = new OracleParameter("msgErr", OracleDbType.Varchar2, 4000);
+                    ErrorMsg.Direction = System.Data.ParameterDirection.Output;
+                    cmd.Parameters.Add(ErrorMsg);
+
+                    // Счет кредита
+                    cmd.Parameters.Add("acc", OracleDbType.Varchar2, 25, System.Data.ParameterDirection.Input).Value = acc;
+
+                    cmd.ExecuteNonQuery();
+                    rt = Convert.ToInt32((decimal)(Oracle.ManagedDataAccess.Types.OracleDecimal)cmd.Parameters["Success"].Value);
+                    var eMsg = ((Oracle.ManagedDataAccess.Types.OracleString)cmd.Parameters["msgErr"].Value).ToString().Trim();
+                    if (rt == 2)
+                        logger.Warn($"Счет {acc} не привязан к карте МИР");
+                    return rt;
+                }
+            }
+            catch (Exception ex)
+            {
+                while (ex != null)
+                {
+                    logger.Error(ex.Message);
+                    ex = ex.InnerException;
+                }
+                return -1234;
+            }
+        }
+
         public bool ExistTransaction(string acc, decimal sm, DateTime dt, int idtrn, ref DateTime dfakt, ref int itrnnum)
         {
             try
@@ -125,7 +174,9 @@ namespace pfr
                         "select itrnnum, dtrntran from XXI.TRN_MF where ctrnaccc = '{0}' and mtrnsumc = {1} " +
                             "and dtrntran >= TO_DATE('{2}', 'DD.MM.YYYY') and ctrnpurp like '%[Id-{3}]%'",
                         acc, sm.ToString("F2").Replace(',', '.'), dt.ToString("dd.MM.yyyy"), idtrn);
+#pragma warning disable CA2100 // Review SQL queries for security vulnerabilities
                     var cmd = new OracleCommand(sqlstr, cn);
+#pragma warning restore CA2100 // Review SQL queries for security vulnerabilities
                     using (var dr = cmd.ExecuteReader())
                     {
                         if (dr.Read())
@@ -204,10 +255,12 @@ namespace pfr
                 {
                     cn.Open();
 
+#pragma warning disable CA2100 // Review SQL queries for security vulnerabilities
                     cmd.CommandText = String.Format(
                             "select itrnnum from XXI.TRN_MF where ctrnaccc = '{0}' and mtrnsumc = {1} " +
                                 "and dtrntran >= TO_DATE('{2}', 'DD.MM.YYYY') and dtrntran < TO_DATE('{3}', 'DD.MM.YYYY') and ctrnpurp like '%[Id-{4}]%'",
                             CredAcc, Sum.ToString("F2").Replace(',', '.'), Dt.ToString("dd.MM.yyyy"), Dt.AddDays(1).ToString("dd.MM.yyyy"), IdTrn);
+#pragma warning restore CA2100 // Review SQL queries for security vulnerabilities
                     cmd.CommandType = System.Data.CommandType.Text;
                     cmd.Connection = cn;
                     var o = cmd.ExecuteScalar();
@@ -215,7 +268,7 @@ namespace pfr
                     {
                         string success = "REG_UNKNOWN_ERROR";
                         cmd.Connection = cn;
-                        cmd.CommandText = "XXI.IDOC_REG.Register";
+                        cmd.CommandText = "XXI.SAA.RegisterPfr";
                         cmd.CommandType = System.Data.CommandType.StoredProcedure;
                         cmd.BindByName = true;
 
@@ -275,7 +328,9 @@ namespace pfr
             }
             catch(Exception e)
             {
-                throw new SaaException(String.Format("Ошибка при регистрации документа. Дебет {0} Кредит {1} на сумму {2}", DebAcc, CredAcc, Sum), e);
+                var mess = String.Format("Ошибка при регистрации документа. Дебет {0} Кредит {1} на сумму {2}", DebAcc, CredAcc, Sum);
+                logger.Error(mess);
+                throw new SaaException(mess, e);
             }
         }
 

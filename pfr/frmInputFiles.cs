@@ -78,6 +78,7 @@ namespace pfr
 
         private void AutoReceive(bool isSendtoXXI, DateTime dt)
         {
+            string message;
             if (!Utils.Current.СоздатьПапкиДляВводаВывода())
             {
                 return;
@@ -89,6 +90,7 @@ namespace pfr
             int countTotalReg = 0;
             int countOpis = 0;
             int countOpisTotal = savedTrn.Count;
+            //int kolmir = 0;
             foreach (var opisId in savedTrn)
             {
                 int countDoc = 0;
@@ -97,6 +99,8 @@ namespace pfr
                 foreach (var trnId in opisId.Value)
                 {
                     var o = ctx.TrnSet.Find(trnId);
+                    //var checkMir = new OracleBd().CheckMir(o.Acc);
+                    //var isMir = (checkMir != 2 && checkMir != -1234);
                     var ar = (from ds in ctx.DoSet where ds.Kod == o.DOffice select ds).ToArray()[0];
                     var DebAcc = ar.Acc47422;
                     var OdbUser = ar.Login;
@@ -121,23 +125,26 @@ namespace pfr
                 }
                 else
                 {
-                    var message = String.Format("По описи {0} отчет не сформирован, не все платежи проведены", opis.FileName);
+                    message = String.Format("По описи {0} отчет не сформирован, не все платежи проведены", opis.FileName);
                     logger.Warn(message);
                 }
-                foreach (var spis in opis.SpisSet)
-                {
-                    SaveDeptInfo(spis);
-                }
+                //foreach (var spis in opis.SpisSet)
+                //{
+                //    SaveDeptInfo(spis);
+                //}
             }
             ctx.SaveChanges();
-            MessageBox.Show(String.Format("Зарегистрировано в Инверсии {0} документов из {1}\r\nСформировано {2} из {3} отчетов",
-                countTotalReg, countTotal, countOpis, countOpisTotal));
+            message = String.Format("Зарегистрировано в Инверсии {0} документов из {1}\r\nСформировано {2} из {3} отчетов",
+                countTotalReg, countTotal, countOpis, countOpisTotal);
+            logger.Info(message);
+            MessageBox.Show(message);
             RefreshData1();
         }
 
         private void mnuVx_Click(object sender, EventArgs e)
         {
             AutoReceive(true, DateTime.Now);
+            //AutoReceive(true, new DateTime(2019, 10, 22, 16, 30, 0));
         }
 
         private void mnuOtchet_Click(object sender, EventArgs e)
