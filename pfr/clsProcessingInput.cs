@@ -15,7 +15,7 @@ namespace pfr
     internal class clsProcessingInput
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
-        public string DoIt(Dictionary<int, List<int>> savedTrn, DateTime dt)
+        public string DoIt(Dictionary<int, List<int>> savedTrn, DateTime dt, bool isSendToXXI)
         {
             int kolisx = 0, kolvx = 0;
             string doffice = null; ;
@@ -50,7 +50,7 @@ namespace pfr
                             var numPlat = Int32.Parse(Список.ПачкаВходящихДокументов.ВХОДЯЩАЯ_ОПИСЬ.НомерПлатежногоПоручения);
                             var sumPlat = Список.ПачкаВходящихДокументов.ВХОДЯЩАЯ_ОПИСЬ.СуммаПоЧастиМассива;
                             int idPlat = 0;
-                            if ((idPlat = new OracleBd().ExistPlat(dtPlat, numPlat, sumPlat)) == 0)
+                            if ((idPlat = new OracleBd().ExistPlat(dtPlat, numPlat, sumPlat)) == 0 && isSendToXXI)
                             {
                                 var message = String.Format("Для файла списка {0} не найдена платежка № {1} с датой между {2} и {3} на сумму {4}. " +
                                     "Списки по описи {5} не обработаны. Попробуйте повторно обработать их после проведения платежа в Инверсии.",

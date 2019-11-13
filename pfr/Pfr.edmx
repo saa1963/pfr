@@ -213,7 +213,7 @@
           <Property Name="Xml2" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="FileName3" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="Xml3" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="NumMassiv" Type="String" Nullable="false" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="NumMassiv" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="false" />
           <Property Name="Mec" Type="Int32" Nullable="false" />
           <Property Name="God" Type="Int32" Nullable="false" />
           <Property Name="Sm" Type="Decimal" Nullable="false" Precision="19" Scale="4" />

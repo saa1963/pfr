@@ -84,7 +84,7 @@ namespace pfr
                 return;
             }
             var savedTrn = new Dictionary<int, List<int>>();
-            var msg = new clsProcessingInput().DoIt(savedTrn, dt);
+            var msg = new clsProcessingInput().DoIt(savedTrn, dt, isSendtoXXI);
             MessageBox.Show(msg);
             int countTotal = 0;
             int countTotalReg = 0;
@@ -144,7 +144,7 @@ namespace pfr
         private void mnuVx_Click(object sender, EventArgs e)
         {
             AutoReceive(true, DateTime.Now);
-            //AutoReceive(true, new DateTime(2019, 10, 22, 16, 30, 0));
+            //AutoReceive(false, new DateTime(2019, 11, 5, 16, 30, 0));
         }
 
         private void mnuOtchet_Click(object sender, EventArgs e)
