@@ -52,6 +52,7 @@
             this.dgv2 = new System.Windows.Forms.DataGridView();
             this.Column7 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column8 = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.корректировкаToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -77,7 +78,8 @@
             this.обработкаToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mnuVx,
             this.mnuCheck,
-            this.mnuOtchet});
+            this.mnuOtchet,
+            this.корректировкаToolStripMenuItem});
             this.обработкаToolStripMenuItem.Name = "обработкаToolStripMenuItem";
             this.обработкаToolStripMenuItem.Size = new System.Drawing.Size(58, 23);
             this.обработкаToolStripMenuItem.Text = "Задачи";
@@ -255,6 +257,13 @@
             this.Column8.Resizable = System.Windows.Forms.DataGridViewTriState.True;
             this.Column8.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
             // 
+            // корректировкаToolStripMenuItem
+            // 
+            this.корректировкаToolStripMenuItem.Name = "корректировкаToolStripMenuItem";
+            this.корректировкаToolStripMenuItem.Size = new System.Drawing.Size(283, 22);
+            this.корректировкаToolStripMenuItem.Text = "Корректировка";
+            this.корректировкаToolStripMenuItem.Click += new System.EventHandler(this.mnuManulCheck_Click);
+            // 
             // frmInputFiles
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -302,5 +311,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Column5;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column9;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column6;
+        private System.Windows.Forms.ToolStripMenuItem корректировкаToolStripMenuItem;
     }
 }

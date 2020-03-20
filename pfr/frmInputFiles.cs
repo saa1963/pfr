@@ -99,19 +99,25 @@ namespace pfr
                 foreach (var trnId in opisId.Value)
                 {
                     var o = ctx.TrnSet.Find(trnId);
-                    //var checkMir = new OracleBd().CheckMir(o.Acc);
-                    //var isMir = (checkMir != 2 && checkMir != -1234);
-                    var ar = (from ds in ctx.DoSet where ds.Kod == o.DOffice select ds).ToArray()[0];
-                    var DebAcc = ar.Acc47422;
-                    var OdbUser = ar.Login;
-                    if (new OracleBd().RegisterDoc(DebAcc: DebAcc, CredAcc: o.Acc, Sum: o.Sm, Dt: o.DateReg.Date, User: OdbUser,
-                                Info: String.Format("Переч.пенсии из ПФР за {0} {1}г. [Id-{2}]", Utils.months[o.SpisSet.mec - 1],
-                                o.SpisSet.god, o.Id), IdTrn: o.Id, isSendtoXXI: isSendtoXXI))
+                    var ar1 = (from ds in ctx.DoSet where ds.Kod == o.DOffice select ds).ToArray();
+                    if (ar1.Length > 0)
                     {
-                        o.DFakt = dt.Date;
-                        o.KodZachisl = "З1";
-                        logger.Info(String.Format("Зарегистрирован платежный ордер. Дебет {0} Кредит {1} {2} на сумму {3}", DebAcc, o.Acc, o.Fio, o.Sm));
-                        countDoc++;
+                        var ar = ar1[0];
+                        var DebAcc = ar.Acc47422;
+                        var OdbUser = ar.Login;
+                        if (new OracleBd().RegisterDoc(DebAcc: DebAcc, CredAcc: o.Acc, Sum: o.Sm, Dt: o.DateReg.Date, User: OdbUser,
+                                    Info: String.Format("Переч.пенсии из ПФР за {0} {1}г. [Id-{2}]", Utils.months[o.SpisSet.mec - 1],
+                                    o.SpisSet.god, o.Id), IdTrn: o.Id, isSendtoXXI: isSendtoXXI))
+                        {
+                            o.DFakt = dt.Date;
+                            o.KodZachisl = "З1";
+                            logger.Info(String.Format("Зарегистрирован платежный ордер. Дебет {0} Кредит {1} {2} на сумму {3}", DebAcc, o.Acc, o.Fio, o.Sm));
+                            countDoc++;
+                        }
+                    }
+                    else
+                    {
+                        logger.Error(String.Format("Незарегистрирован платежный ордер. Кредит {0} {1} на сумму {2}. Скорее всего неоткрыт вкладной счет.", o.Acc, o.Fio, o.Sm));
                     }
                 }
                 opis.KolObrab1 = countDoc;
@@ -144,7 +150,7 @@ namespace pfr
         private void mnuVx_Click(object sender, EventArgs e)
         {
             AutoReceive(true, DateTime.Now);
-            //AutoReceive(false, new DateTime(2019, 11, 5, 16, 30, 0));
+            //AutoReceive(false, new DateTime(2020, 03, 20, 16, 30, 0));
         }
 
         private void mnuOtchet_Click(object sender, EventArgs e)
