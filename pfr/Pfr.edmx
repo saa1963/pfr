@@ -20,7 +20,7 @@
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="DateReg" Type="datetime" Nullable="false" />
-          <Property Name="NumMassiv" Type="varchar" MaxLength="25" Nullable="false" />
+          <Property Name="NumMassiv" Type="varchar" MaxLength="30" Nullable="false" />
           <Property Name="Mec" Type="int" Nullable="false" />
           <Property Name="God" Type="int" Nullable="false" />
           <Property Name="Sm" Type="money" Nullable="false" />
@@ -79,6 +79,7 @@
           <Property Name="StraxNum" Type="varchar" MaxLength="15" />
           <Property Name="DFakt" Type="datetime" />
           <Property Name="KodZachisl" Type="varchar" MaxLength="10" />
+          <Property Name="Acc1" Type="nchar" MaxLength="20" />
         </EntityType>
         <EntityType Name="TrnSet1">
           <Key>
@@ -272,6 +273,7 @@
           <Property Name="DFakt" Type="DateTime" Precision="3" />
           <Property Name="KodZachisl" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="TrnSet1" Relationship="pfrModel.FK_TrnSet1_TrnSet" FromRole="TrnSet" ToRole="TrnSet1" />
+          <Property Name="Acc1" Type="String" MaxLength="20" FixedLength="true" Unicode="true" />
         </EntityType>
         <EntityType Name="UserSet">
           <Key>
@@ -440,6 +442,7 @@
           <EntitySetMapping Name="TrnSet">
             <EntityTypeMapping TypeName="pfrModel.TrnSet">
               <MappingFragment StoreEntitySet="TrnSet">
+                <ScalarProperty Name="Acc1" ColumnName="Acc1" />
                 <ScalarProperty Name="KodZachisl" ColumnName="KodZachisl" />
                 <ScalarProperty Name="DFakt" ColumnName="DFakt" />
                 <ScalarProperty Name="StraxNum" ColumnName="StraxNum" />

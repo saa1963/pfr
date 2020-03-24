@@ -132,6 +132,11 @@ namespace pfr
             }
         }
 
+        internal void Rasxozhd(OpisSet o, DateTime now, int? trnid)
+        {
+            throw new NotImplementedException();
+        }
+
         private string Version()
         {
             // Get the version of the executing assembly (that is, this assembly).

@@ -34,6 +34,7 @@ namespace pfr
         public string StraxNum { get; set; }
         public Nullable<System.DateTime> DFakt { get; set; }
         public string KodZachisl { get; set; }
+        public string Acc1 { get; set; }
     
         public virtual SpisSet SpisSet { get; set; }
         public virtual ICollection<TrnSet1> TrnSet1 { get; set; }

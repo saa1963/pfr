@@ -149,8 +149,10 @@ namespace pfr
 
         private void mnuVx_Click(object sender, EventArgs e)
         {
-            AutoReceive(true, DateTime.Now);
-            //AutoReceive(false, new DateTime(2020, 03, 20, 16, 30, 0));
+            if (!System.Diagnostics.Debugger.IsAttached)
+                AutoReceive(true, DateTime.Now);
+            else
+                AutoReceive(false, DateTime.Now);
         }
 
         private void mnuOtchet_Click(object sender, EventArgs e)
@@ -169,9 +171,28 @@ namespace pfr
                     != System.Windows.Forms.DialogResult.Yes) return;
             }
             new clsProcessing().Otchet0(o, DateTime.Now);
+            int? trnid;
+            if ((trnid = Exist_Z2(o)).HasValue)
+            {
+                new clsProcessing().Rasxozhd(o, DateTime.Now, trnid);
+            }
             ctx.SaveChanges();
             RefreshData2();
             MessageBox.Show("Отчет сформирован");
+        }
+
+        private int? Exist_Z2(OpisSet opis)
+        {
+            foreach( var o in opis.SpisSet){
+                foreach(var o1 in o.TrnSet)
+                {
+                    if (o1.KodZachisl == "З2")
+                    {
+                        return o1.Id;
+                    }
+                }
+            }
+            return null;
         }
 
         private void mnuCheck_Click(object sender, EventArgs e)

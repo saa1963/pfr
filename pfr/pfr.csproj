@@ -119,6 +119,12 @@
     <Compile Include="frmChangePassword.Designer.cs">
       <DependentUpon>frmChangePassword.cs</DependentUpon>
     </Compile>
+    <Compile Include="frmGetAccount.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmGetAccount.Designer.cs">
+      <DependentUpon>frmGetAccount.cs</DependentUpon>
+    </Compile>
     <Compile Include="frmGetDate.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -199,6 +205,9 @@
     <Compile Include="Utils.cs" />
     <EmbeddedResource Include="frmChangePassword.resx">
       <DependentUpon>frmChangePassword.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmGetAccount.resx">
+      <DependentUpon>frmGetAccount.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmGetDate.resx">
       <DependentUpon>frmGetDate.cs</DependentUpon>

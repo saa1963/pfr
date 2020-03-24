@@ -17,6 +17,7 @@ namespace pfr
 {
     public partial class frmMain : Form
     {
+        private pfrEntities1 ctx = null;
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
         BindingSource bs = new BindingSource();
         string[] admins = new string[] { "PKA", "ADM999", "XXI", "SAA" };
@@ -26,7 +27,6 @@ namespace pfr
             InitializeComponent();
             dgv.AutoGenerateColumns = false;
             RefreshData();
-            //var userOffice = new OracleBd().UserOffice();    
             if (!admins.Contains(Settings.Default.login.ToUpper()))
             {
                 mnuSofit.Enabled = false;
@@ -44,11 +44,12 @@ namespace pfr
 
         private void RefreshData()
         {
-            DateTime dt1 = tbDate.Value.Date;
-            DateTime dt2 = dt1.AddDays(1);
-            //var userOffice = new OracleBd().UserOffice();
-            using (var ctx = new pfrEntities1(Utils.Current.cn))
+            try
             {
+                DateTime dt1 = tbDate.Value.Date;
+                DateTime dt2 = dt1.AddDays(1);
+                //var userOffice = new OracleBd().UserOffice();
+                ctx = new pfrEntities1(Utils.Current.cn);
                 bs.DataSource = null;
                 if (!admins.Contains(Settings.Default.login.ToUpper()))
                 {
@@ -62,6 +63,15 @@ namespace pfr
                     bs.DataSource = ctx.TrnSet.Include("SpisSet").Where(s => s.DateReg >= dt1 && s.DateReg < dt2).ToList();
                 }
                 dgv.DataSource = bs;
+            }
+            catch (Exception e)
+            {
+                do
+                {
+                    MessageBox.Show(e.Message);
+                    e = e.InnerException;
+                }
+                while (e != null);
             }
         }
 
@@ -89,28 +99,32 @@ namespace pfr
                 decimal sm0 = 0;
                 var f = new frmGetDate(tbDate.Value.Date);
                 if (f.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
-                using (var ctx = new pfrEntities1(Utils.Current.cn))
+                foreach (DataGridViewRow r in dgv.SelectedRows)
                 {
-                    foreach (DataGridViewRow r in dgv.SelectedRows)
+                    var o = (TrnSet)r.DataBoundItem;
+                    int? itrnnum = o.SpisSet.ITrnNum;
+                    var ar = (from ds in ctx.DoSet where ds.Kod == o.DOffice select ds).ToArray()[0];
+                    var DebAcc = ar.Acc47422;
+                    var CredAcc = string.IsNullOrWhiteSpace(o.Acc1) ? o.Acc : o.Acc1;
+                    var OdbUser = ar.Login;
+                    var rt = new OracleBd().RegisterDoc(DebAcc: DebAcc, CredAcc: CredAcc, Sum: o.Sm, Dt: f.Dt, User: OdbUser, 
+                        Info: String.Format("Переч.пенсии из ПФР за {0} {1}г. [Id-{2}]", Utils.months[o.SpisSet.mec - 1], 
+                        o.SpisSet.god, o.Id), IdTrn: o.Id, isSendtoXXI: !System.Diagnostics.Debugger.IsAttached);
+                    if (rt)
                     {
-                        var o = (TrnSet)r.DataBoundItem;
-                        int? itrnnum = o.SpisSet.ITrnNum;
-                        var ar = (from ds in ctx.DoSet where ds.Kod == o.DOffice select ds).ToArray()[0];
-                        var DebAcc = ar.Acc47422;
-                        var OdbUser = ar.Login;
-                        var rt = new OracleBd().RegisterDoc(DebAcc: DebAcc, CredAcc: o.Acc, Sum: o.Sm, Dt: f.Dt, User: OdbUser, 
-                            Info: String.Format("Переч.пенсии из ПФР за {0} {1}г. [Id-{2}]", Utils.months[o.SpisSet.mec - 1], 
-                            o.SpisSet.god, o.Id), IdTrn: o.Id, isSendtoXXI: true);
-                        if (rt)
-                        {
-                            logger.Info(String.Format("Зарегистрирован платежный ордер. Дебет {0} Кредит {1} {2} на сумму {3}", DebAcc, o.Acc, o.Fio, o.Sm));
-                            i++;
-                            sm0 += o.Sm;
-                        }
-                        tot++;
+                        o.DFakt = f.Dt;
+                        if (CredAcc != o.Acc)
+                            o.KodZachisl = "З2";
+                        else
+                            o.KodZachisl = "З1";
+                        logger.Info(String.Format("Зарегистрирован платежный ордер. Дебет {0} Кредит {1} {2} на сумму {3}", DebAcc, o.Acc, o.Fio, o.Sm));
+                        i++;
+                        sm0 += o.Sm;
                     }
-                    MessageBox.Show(String.Format("Выгружено {0} документов из {1} на сумму {2}.", i, tot, sm0.ToString("F2")));
+                    tot++;
                 }
+                ctx.SaveChanges();
+                MessageBox.Show(String.Format("Выгружено {0} документов из {1} на сумму {2}.", i, tot, sm0.ToString("F2")));
             }
             catch (Exception e1)
             {
@@ -506,6 +520,30 @@ namespace pfr
             {
                 MessageBox.Show(doffice);
             }
+        }
+
+        private void mnuNewAccount_Click(object sender, EventArgs e)
+        {
+            string doffice = null;
+            if (bs.Current == null) return;
+            var f = new frmGetAccount();
+            if (f.ShowDialog() == DialogResult.OK)
+            {
+                var trn = (TrnSet)bs.Current;
+                if (new OracleBd().IsExistAcc(f.Acc, out doffice) && f.Acc != trn.Acc)
+                {
+                    trn.Acc1 = f.Acc;
+                    trn.DOffice = doffice;
+                    ctx.SaveChanges();
+                    bs.ResetCurrentItem();
+                }
+                else
+                {
+                    MessageBox.Show($"Счет {f.Acc} не открыт или введен неверный счет.");
+                }
+            }
+            //string doffice = null;
+
         }
     }
 }

@@ -19,19 +19,23 @@ namespace pfr
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            
 
-            var Server = "192.168.20.221";
-            var Password = "zxc";
-
-            //var Server = "127.0.0.1";
-            //var Password = "1";
-
+            string Server, Password;
+            if (!System.Diagnostics.Debugger.IsAttached)
+            {
+                Server = "192.168.20.221";
+                Password = "zxc";
+            }
+            else
+            {
+                Server = "127.0.0.1";
+                Password = "1";
+            }
 
             var Database = "pfr";
             var Login = "sa";
-            
-            
+
+
 
             // Initialize the EntityConnectionStringBuilder.
             EntityConnectionStringBuilder entityBuilder =
@@ -58,7 +62,7 @@ namespace pfr
             if (f.DialogResult == DialogResult.OK)
             {
                 var f1 = new frmMain();
-                f1.Text = "ПФР " + Settings.Default.login + "@" + Settings.Default.database;
+                f1.Text = "ПФР " + Settings.Default.login + "@" + Settings.Default.database + " " + Server;
                 Application.Run(f1);
             }
         }

@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             this.BottomToolStripPanel = new System.Windows.Forms.ToolStripPanel();
             this.TopToolStripPanel = new System.Windows.Forms.ToolStripPanel();
             this.RightToolStripPanel = new System.Windows.Forms.ToolStripPanel();
@@ -40,9 +40,12 @@
             this.Column2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column6 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column5 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.mnuFiles = new System.Windows.Forms.ToolStripMenuItem();
+            this.изменитьToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuNewAccount = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuOdb = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuXXI = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuSofit = new System.Windows.Forms.ToolStripMenuItem();
@@ -115,6 +118,7 @@
             this.Column2,
             this.Column3,
             this.Column4,
+            this.Column6,
             this.Column5});
             this.dgv.Location = new System.Drawing.Point(12, 54);
             this.dgv.Name = "dgv";
@@ -142,7 +146,7 @@
             this.Column3.HeaderText = "ФИО";
             this.Column3.Name = "Column3";
             this.Column3.ReadOnly = true;
-            this.Column3.Width = 300;
+            this.Column3.Width = 230;
             // 
             // Column4
             // 
@@ -152,13 +156,21 @@
             this.Column4.ReadOnly = true;
             this.Column4.Width = 150;
             // 
+            // Column6
+            // 
+            this.Column6.DataPropertyName = "Acc1";
+            this.Column6.HeaderText = "Счет-2";
+            this.Column6.Name = "Column6";
+            this.Column6.ReadOnly = true;
+            this.Column6.Width = 150;
+            // 
             // Column5
             // 
             this.Column5.DataPropertyName = "Sm";
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            dataGridViewCellStyle2.Format = "N2";
-            dataGridViewCellStyle2.NullValue = null;
-            this.Column5.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle1.Format = "N2";
+            dataGridViewCellStyle1.NullValue = null;
+            this.Column5.DefaultCellStyle = dataGridViewCellStyle1;
             this.Column5.HeaderText = "Сумма";
             this.Column5.Name = "Column5";
             this.Column5.ReadOnly = true;
@@ -167,6 +179,7 @@
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mnuFiles,
+            this.изменитьToolStripMenuItem,
             this.mnuOdb,
             this.mnuPrint,
             this.mnuOptions,
@@ -183,6 +196,21 @@
             this.mnuFiles.Size = new System.Drawing.Size(57, 20);
             this.mnuFiles.Text = "Файлы";
             this.mnuFiles.Click += new System.EventHandler(this.mnuFiles_Click);
+            // 
+            // изменитьToolStripMenuItem
+            // 
+            this.изменитьToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.mnuNewAccount});
+            this.изменитьToolStripMenuItem.Name = "изменитьToolStripMenuItem";
+            this.изменитьToolStripMenuItem.Size = new System.Drawing.Size(73, 20);
+            this.изменитьToolStripMenuItem.Text = "Изменить";
+            // 
+            // mnuNewAccount
+            // 
+            this.mnuNewAccount.Name = "mnuNewAccount";
+            this.mnuNewAccount.Size = new System.Drawing.Size(141, 22);
+            this.mnuNewAccount.Text = "Другой счет";
+            this.mnuNewAccount.Click += new System.EventHandler(this.mnuNewAccount_Click);
             // 
             // mnuOdb
             // 
@@ -205,6 +233,7 @@
             this.mnuSofit.Name = "mnuSofit";
             this.mnuSofit.Size = new System.Drawing.Size(224, 22);
             this.mnuSofit.Text = "Файлы для Софит-Эмитент";
+            this.mnuSofit.Visible = false;
             this.mnuSofit.Click += new System.EventHandler(this.mnuSofit_Click);
             // 
             // mnuPrint
@@ -248,7 +277,7 @@
             // testToolStripMenuItem
             // 
             this.testToolStripMenuItem.Name = "testToolStripMenuItem";
-            this.testToolStripMenuItem.Size = new System.Drawing.Size(40, 20);
+            this.testToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
             this.testToolStripMenuItem.Text = "Test";
             this.testToolStripMenuItem.Visible = false;
             this.testToolStripMenuItem.Click += new System.EventHandler(this.testToolStripMenuItem_Click);
@@ -281,11 +310,6 @@
         private System.Windows.Forms.ToolStripContentPanel ContentPanel;
         private System.Windows.Forms.DateTimePicker tbDate;
         private System.Windows.Forms.DataGridView dgv;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column1;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column2;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column3;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column4;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column5;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem mnuOdb;
         private System.Windows.Forms.ToolStripMenuItem mnuOptions;
@@ -297,6 +321,14 @@
         private System.Windows.Forms.ToolStripMenuItem mnuFiles;
         private System.Windows.Forms.ToolStripMenuItem mnuOrders;
         private System.Windows.Forms.ToolStripMenuItem testToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem изменитьToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem mnuNewAccount;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column1;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column2;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column3;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column4;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column6;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column5;
     }
 }
 
