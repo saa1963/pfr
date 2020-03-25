@@ -33,7 +33,7 @@ namespace pfr
             cl.ValueMember = "Kod";
             bs.DataSource = lst;
             dgv.DataSource = bs;
-            Obrabotano = 0;
+            //Obrabotano = 0;
             dgv.CellValueChanged += dgv_CellValueChanged;
         }
 
@@ -59,7 +59,6 @@ namespace pfr
 
         private void frmPreOtchet_FormClosing(object sender, FormClosingEventArgs e)
         {
-            int obr = 0;
             this.Validate();
             foreach (var o in (List<TrnSet>)bs.DataSource)
             {
@@ -88,14 +87,10 @@ namespace pfr
                 MessageBox.Show("Неверно введены данные");
                 return;
             }
-            foreach (var o in (List<TrnSet>)bs.DataSource)
-            {
-                if (o.KodZachisl != null) obr++;
-            }
-            Obrabotano = obr;
+            //Obrabotano = Utils.Current.Obrabotano((List<TrnSet>)bs.DataSource);
         }
 
-        public int Obrabotano { get; set; }
+        //public int Obrabotano { get; set; }
 
         private void mnuCancelAll_Click(object sender, EventArgs e)
         {

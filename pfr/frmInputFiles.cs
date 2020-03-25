@@ -19,7 +19,6 @@ namespace pfr
         BindingSource bs1 = new BindingSource();
         BindingSource bs2 = new BindingSource();
         pfrEntities1 ctx = new pfrEntities1(Utils.Current.cn);
-        //BindingList<OpisSet> bss = new BindingList<OpisSet>()
         
         public frmInputFiles()
         {
@@ -134,10 +133,6 @@ namespace pfr
                     message = String.Format("По описи {0} отчет не сформирован, не все платежи проведены", opis.FileName);
                     logger.Warn(message);
                 }
-                //foreach (var spis in opis.SpisSet)
-                //{
-                //    SaveDeptInfo(spis);
-                //}
             }
             ctx.SaveChanges();
             message = String.Format("Зарегистрировано в Инверсии {0} документов из {1}\r\nСформировано {2} из {3} отчетов",
@@ -171,28 +166,29 @@ namespace pfr
                     != System.Windows.Forms.DialogResult.Yes) return;
             }
             new clsProcessing().Otchet0(o, DateTime.Now);
-            int? trnid;
-            if ((trnid = Exist_Z2(o)).HasValue)
+            List<int> trnIds;
+            if ((trnIds = Exist_Z2(o)).Count > 0)
             {
-                new clsProcessing().Rasxozhd(o, DateTime.Now, trnid);
+                new clsProcessing().Rasxozhd(o, DateTime.Now, trnIds);
             }
             ctx.SaveChanges();
             RefreshData2();
             MessageBox.Show("Отчет сформирован");
         }
 
-        private int? Exist_Z2(OpisSet opis)
+        private List<int> Exist_Z2(OpisSet opis)
         {
+            List<int> lst = new List<int>();
             foreach( var o in opis.SpisSet){
                 foreach(var o1 in o.TrnSet)
                 {
                     if (o1.KodZachisl == "З2")
                     {
-                        return o1.Id;
+                        lst.Add(o1.Id);
                     }
                 }
             }
-            return null;
+            return lst;
         }
 
         private void mnuCheck_Click(object sender, EventArgs e)
@@ -246,7 +242,7 @@ namespace pfr
             }
             var f = new frmPreOtchet(lst);
             f.ShowDialog();
-            o.KolObrab = f.Obrabotano;
+            o.KolObrab = Utils.Current.Obrabotano(o);
             bs1.ResetCurrentItem();
             ctx.SaveChanges();
         }

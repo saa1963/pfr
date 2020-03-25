@@ -118,5 +118,23 @@ namespace pfr
             get => String.Format("Подробно в журнале событий в папке {0}",
                         Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "pfr"));
         }
+
+        public string BankName
+        {
+            get => "АО Банк \"ТКПБ\"";
+        }
+
+        public int Obrabotano(OpisSet opis)
+        {
+            int obr = 0;
+            foreach (var o in opis.SpisSet)
+            {
+                foreach(var o1 in o.TrnSet)
+                {
+                    if (o1.KodZachisl != null) obr++;
+                }
+            }
+            return obr;
+        }
     }
 }

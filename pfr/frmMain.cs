@@ -102,6 +102,8 @@ namespace pfr
                 foreach (DataGridViewRow r in dgv.SelectedRows)
                 {
                     var o = (TrnSet)r.DataBoundItem;
+                    var spis = ctx.SpisSet.Find(o.IdSpis);
+                    var opis = ctx.OpisSet.Find(spis.OpisId);
                     int? itrnnum = o.SpisSet.ITrnNum;
                     var ar = (from ds in ctx.DoSet where ds.Kod == o.DOffice select ds).ToArray()[0];
                     var DebAcc = ar.Acc47422;
@@ -117,6 +119,7 @@ namespace pfr
                             o.KodZachisl = "З2";
                         else
                             o.KodZachisl = "З1";
+                        opis.KolObrab = Utils.Current.Obrabotano(opis);
                         logger.Info(String.Format("Зарегистрирован платежный ордер. Дебет {0} Кредит {1} {2} на сумму {3}", DebAcc, o.Acc, o.Fio, o.Sm));
                         i++;
                         sm0 += o.Sm;
