@@ -53,39 +53,61 @@ namespace pfr
             {
                 wr.Formatting = Formatting.Indented;
                 wr.WriteStartDocument();
-                wr.WriteStartElement("ФайлПФР");
-                    wr.WriteElementString("ИмяФайла", sb.ToString());
-                    wr.WriteStartElement("ЗаголовокФайла");
-                        wr.WriteElementString("ВерсияФормата", "07.00");
-                        wr.WriteElementString("ТипФайла", "ВНЕШНИЙ");
-                        wr.WriteStartElement("ПрограммаПодготовкиДанных");
-                            wr.WriteElementString("НазваниеПрограммы", "ОБМЕН_С_ПФР");
-                            wr.WriteElementString("Версия", Version());
-                        wr.WriteEndElement();
-                        wr.WriteElementString("ИсточникДанных", "ДОСТАВЩИК");
-                    wr.WriteEndElement();
-                    wr.WriteStartElement("ПачкаИсходящихДокументов");
-                        wr.WriteAttributeString("ДоставочнаяОрганизация", "БАНК");
-                        wr.WriteStartElement("ИСХОДЯЩАЯ_ОПИСЬ");
-                            wr.WriteStartElement("СоставительПачки");
-                                wr.WriteElementString("НаименованиеОрганизации", Utils.Current.BankName);
+                {
+                    wr.WriteStartElement("ФайлПФР");
+                    {
+                        wr.WriteElementString("ИмяФайла", sb.ToString());
+                        wr.WriteStartElement("ЗаголовокФайла");
+                        {
+                            wr.WriteElementString("ВерсияФормата", "07.00");
+                            wr.WriteElementString("ТипФайла", "ВНЕШНИЙ");
+                            wr.WriteStartElement("ПрограммаПодготовкиДанных");
+                            {
+                                wr.WriteElementString("НазваниеПрограммы", "ОБМЕН_С_ПФР");
+                                wr.WriteElementString("Версия", Version());
+                            }
                             wr.WriteEndElement();
-                            wr.WriteStartElement("СоставДокументов");
-                                wr.WriteElementString("Количество", "1");
-                                wr.WriteStartElement("НаличиеДокументов");
-                                    wr.WriteElementString("ТипДокумента", "ПОДТВЕРЖДЕНИЕ_О_ПРОЧТЕНИИ_СПИСКОВ_ПРИ_ЗАЧИСЛЕНИИ");
-                                    wr.WriteElementString("Количество", "1");
+                            wr.WriteElementString("ИсточникДанных", "ДОСТАВЩИК");
+                        }
+                        wr.WriteEndElement();
+                        wr.WriteStartElement("ПачкаИсходящихДокументов");
+                        {
+                            wr.WriteAttributeString("ДоставочнаяОрганизация", "БАНК");
+                            wr.WriteStartElement("ИСХОДЯЩАЯ_ОПИСЬ");
+                            {
+                                wr.WriteStartElement("СоставительПачки");
+                                {
+                                    wr.WriteElementString("НаименованиеОрганизации", Utils.Current.BankName);
+                                }
                                 wr.WriteEndElement();
+                                wr.WriteStartElement("СоставДокументов");
+                                {
+                                    wr.WriteElementString("Количество", "1");
+                                    wr.WriteStartElement("НаличиеДокументов");
+                                    {
+                                        wr.WriteElementString("ТипДокумента", "ПОДТВЕРЖДЕНИЕ_О_ПРОЧТЕНИИ_СПИСКОВ_ПРИ_ЗАЧИСЛЕНИИ");
+                                        wr.WriteElementString("Количество", "1");
+                                    }
+                                    wr.WriteEndElement();
+                                }
+                                wr.WriteEndElement();
+                            }
                             wr.WriteEndElement();
                             wr.WriteStartElement("ТерриториальныйОрганПФР");
+                            {
                                 wr.WriteStartElement("НалоговыйНомер");
+                                {
                                     wr.WriteElementString("ИНН", Опись.ПачкаВходящихДокументов.ВХОДЯЩАЯ_ОПИСЬ.ТерриториальныйОрганПФР.НалоговыйНомер.ИНН);
                                     wr.WriteElementString("КПП", Опись.ПачкаВходящихДокументов.ВХОДЯЩАЯ_ОПИСЬ.ТерриториальныйОрганПФР.НалоговыйНомер.КПП);
+                                }
                                 wr.WriteEndElement();
+                            }
                             wr.WriteEndElement();
                             wr.WriteElementString("НомерБанка", Опись.ИмяФайла.Substring(69, 4));
                             wr.WriteStartElement("ОрганизацияСформировавшаяДокумент");
+                            {
                                 wr.WriteElementString("НаименованиеОрганизации", Utils.Current.BankName);
+                            }
                             wr.WriteEndElement();
                             wr.WriteElementString("ТипМассиваПоручений", "ОСНОВНОЙ");
                             wr.WriteElementString("Месяц", Опись.ПачкаВходящихДокументов.ВХОДЯЩАЯ_ОПИСЬ.Месяц);
@@ -94,38 +116,47 @@ namespace pfr
                             wr.WriteElementString("ДатаФормирования", dt.ToString("dd.MM.yyyy"));
                             wr.WriteElementString("Должность", Settings.Default.Dolzh);
                             wr.WriteElementString("Руководитель", Settings.Default.Ruk);
+                        }
                         wr.WriteEndElement();
                         wr.WriteStartElement("ПОДТВЕРЖДЕНИЕ_О_ПРОЧТЕНИИ_СПИСКОВ_ПРИ_ЗАЧИСЛЕНИИ");
+                        {
                             wr.WriteElementString("Количество", (Списки.Count + 2).ToString());
                             wr.WriteStartElement("СведенияОмассивеПоручений");
+                            {
                                 wr.WriteElementString("ТипСтроки", "ДЕТАЛЬНАЯ");
                                 wr.WriteElementString("ИмяФайла", Опись.ИмяФайла);
                                 wr.WriteElementString("СистемныйНомерМассива", Опись.ПачкаВходящихДокументов.ВХОДЯЩАЯ_ОПИСЬ.СистемныйНомерМассива);
                                 wr.WriteElementString("ПодтверждениеОпрочтении", "ПРОЧТЕНО");
                                 wr.WriteElementString("РезультатПроверки", "ПРАВИЛЬНО");
+                            }
                             wr.WriteEndElement();
                             foreach (var Список in Списки)
                             {
                                 wr.WriteStartElement("СведенияОмассивеПоручений");
+                                {
                                     wr.WriteElementString("ТипСтроки", "ДЕТАЛЬНАЯ");
                                     wr.WriteElementString("ИмяФайла", Список.ИмяФайла);
                                     wr.WriteElementString("СистемныйНомерМассива", Список.ПачкаВходящихДокументов.ВХОДЯЩАЯ_ОПИСЬ.СистемныйНомерМассива);
                                     wr.WriteElementString("ПодтверждениеОпрочтении", "ПРОЧТЕНО");
                                     wr.WriteElementString("РезультатПроверки", "ПРАВИЛЬНО");
+                                }
                                 wr.WriteEndElement();
                             }
                             wr.WriteStartElement("СведенияОмассивеПоручений");
+                            {
                                 wr.WriteElementString("ТипСтроки", "ИТОГО");
-                                //wr.WriteElementString("КодРайона", Опись.ПачкаВходящихДокументов.ВХОДЯЩАЯ_ОПИСЬ.);
                                 wr.WriteElementString("КоличествоПоступившихФайлов", (Списки.Count + 1).ToString());
                                 wr.WriteElementString("СистемныйНомерМассива", Опись.ПачкаВходящихДокументов.ВХОДЯЩАЯ_ОПИСЬ.СистемныйНомерМассива);
+                            }
                             wr.WriteEndElement();
                             wr.WriteElementString("Решение", "ПРИНЯТО");
                             wr.WriteElementString("ДатаВыдачиДокумента", dt.ToString("dd.MM.yyyy"));
                             wr.WriteElementString("ВремяФормирования", dt.ToString("HH:mm"));
+                        }
                         wr.WriteEndElement();
+                    }
                     wr.WriteEndElement();
-                wr.WriteEndElement();
+                }
                 wr.WriteEndDocument();
             }
             return fname;
@@ -289,67 +320,91 @@ namespace pfr
             {
                 wr.Formatting = Formatting.Indented;
                 wr.WriteStartDocument();
-                wr.WriteStartElement("ФайлПФР");
-                    wr.WriteElementString("ИмяФайла", sb.ToString());
-                    wr.WriteStartElement("ЗаголовокФайла");
-                        wr.WriteElementString("ВерсияФормата", "07.00");
-                        wr.WriteElementString("ТипФайла", "ВНЕШНИЙ");
-                        wr.WriteStartElement("ПрограммаПодготовкиДанных");
-                            wr.WriteElementString("НазваниеПрограммы", "ОБМЕН_С_ПФР");
-                            wr.WriteElementString("Версия", Version());
-                        wr.WriteEndElement();
-                        wr.WriteElementString("ИсточникДанных", "ДОСТАВЩИК");
-                    wr.WriteEndElement();
-                    wr.WriteStartElement("ПачкаИсходящихДокументов");
-                        wr.WriteAttributeString("ДоставочнаяОрганизация", "БАНК");
-                        vx = opisXml.SelectSingleNode("//ВХОДЯЩАЯ_ОПИСЬ");
-                        nav = vx.CreateNavigator();
-                        wr.WriteNode(nav, false);
-                        wr.WriteStartElement("ИСХОДЯЩАЯ_ОПИСЬ");
-                            wr.WriteStartElement("СоставительПачки");
-                                wr.WriteElementString("НаименованиеОрганизации", Utils.Current.BankName);
-                            wr.WriteEndElement();
-                            wr.WriteStartElement("СоставДокументов");
-                                wr.WriteElementString("Количество", "1");
-                                wr.WriteStartElement("НаличиеДокументов");
-                                    wr.WriteElementString("ТипДокумента", "ОПИСЬ_ВОЗВРАЩАЕМЫХ_ФАЙЛОВ_ПРИ_ЗАЧИСЛЕНИИ");
-                                    wr.WriteElementString("Количество", "1");
-                                wr.WriteEndElement();
-                            wr.WriteEndElement();
-                            vx = opisXml.SelectSingleNode("//ТерриториальныйОрганПФР");
-                            nav = vx.CreateNavigator();
-                            wr.WriteNode(nav, false);
-                            wr.WriteElementString("НомерБанка", o.FileName.Substring(69, 4));
-                            wr.WriteStartElement("ОрганизацияСформировавшаяДокумент");
-                                wr.WriteElementString("НаименованиеОрганизации", Utils.Current.BankName);
-                            wr.WriteEndElement();
-                            wr.WriteElementString("ТипМассиваПоручений", "ОСНОВНОЙ");
-                            vx = opisXml.SelectSingleNode("//Месяц");
-                            nav = vx.CreateNavigator();
-                            wr.WriteNode(nav, false);
-                            vx = opisXml.SelectSingleNode("//Год");
-                            nav = vx.CreateNavigator();
-                            wr.WriteNode(nav, false);
-                            wr.WriteElementString("ИсходящийНомер", isx.ToString(new String('0', 10)));
-                            wr.WriteElementString("ДатаФормирования", dt.ToString("dd.MM.yyyy"));
-                            wr.WriteElementString("Должность", Settings.Default.Dolzh);
-                            wr.WriteElementString("Руководитель", Settings.Default.Ruk);
-                        wr.WriteEndElement();
-                        wr.WriteStartElement("ОПИСЬ_ВОЗВРАЩАЕМЫХ_ФАЙЛОВ_ПРИ_ЗАЧИСЛЕНИИ");
-                            wr.WriteElementString("КоличествоПередаваемыхФайлов", o.SpisSet.Count.ToString());
-                            foreach(var o1 in o.SpisSet)
+                {
+                    wr.WriteStartElement("ФайлПФР");
+                    {
+                        wr.WriteElementString("ИмяФайла", sb.ToString());
+                        wr.WriteStartElement("ЗаголовокФайла");
+                        {
+                            wr.WriteElementString("ВерсияФормата", "07.00");
+                            wr.WriteElementString("ТипФайла", "ВНЕШНИЙ");
+                            wr.WriteStartElement("ПрограммаПодготовкиДанных");
                             {
-                                wr.WriteStartElement("ПередаваемыйФайл");
-                                    wr.WriteElementString("ТипДокумента", "ОТЧЕТ_О_ЗАЧИСЛЕНИИ_И_НЕ_ЗАЧИСЛЕНИИ_СУММ");
-                                    wr.WriteElementString("ИмяФайла", o1.FileName1);
-                                    wr.WriteElementString("КоличествоПолучателей", o1.Kol.ToString());
-                                    wr.WriteElementString("НомерЧастиМассива", o1.NumPart.ToString());
-                                    wr.WriteElementString("СуммаПоЧастиМассива", o1.Sm.ToString("F2").Replace(',', '.'));
-                                wr.WriteEndElement();
+                                wr.WriteElementString("НазваниеПрограммы", "ОБМЕН_С_ПФР");
+                                wr.WriteElementString("Версия", Version());
                             }
+                            wr.WriteEndElement();
+                            wr.WriteElementString("ИсточникДанных", "ДОСТАВЩИК");
+                        }
                         wr.WriteEndElement();
+                        wr.WriteStartElement("ПачкаИсходящихДокументов");
+                        {
+                            wr.WriteAttributeString("ДоставочнаяОрганизация", "БАНК");
+                            vx = opisXml.SelectSingleNode("//ВХОДЯЩАЯ_ОПИСЬ");
+                            nav = vx.CreateNavigator();
+                            wr.WriteNode(nav, false);
+                            wr.WriteStartElement("ИСХОДЯЩАЯ_ОПИСЬ");
+                            {
+                                wr.WriteStartElement("СоставительПачки");
+                                {
+                                    wr.WriteElementString("НаименованиеОрганизации", Utils.Current.BankName);
+                                }
+                                wr.WriteEndElement();
+                                wr.WriteStartElement("СоставДокументов");
+                                {
+                                    wr.WriteElementString("Количество", "1");
+                                    wr.WriteStartElement("НаличиеДокументов");
+                                    {
+                                        wr.WriteElementString("ТипДокумента", "ОПИСЬ_ВОЗВРАЩАЕМЫХ_ФАЙЛОВ_ПРИ_ЗАЧИСЛЕНИИ");
+                                        wr.WriteElementString("Количество", "1");
+                                    }
+                                    wr.WriteEndElement();
+                                }
+                                wr.WriteEndElement();
+                                vx = opisXml.SelectSingleNode("//ТерриториальныйОрганПФР");
+                                nav = vx.CreateNavigator();
+                                wr.WriteNode(nav, false);
+                                wr.WriteElementString("НомерБанка", o.FileName.Substring(69, 4));
+                                wr.WriteStartElement("ОрганизацияСформировавшаяДокумент");
+                                {
+                                    wr.WriteElementString("НаименованиеОрганизации", Utils.Current.BankName);
+                                }
+                                wr.WriteEndElement();
+                                wr.WriteElementString("ТипМассиваПоручений", "ОСНОВНОЙ");
+                                vx = opisXml.SelectSingleNode("//Месяц");
+                                nav = vx.CreateNavigator();
+                                wr.WriteNode(nav, false);
+                                vx = opisXml.SelectSingleNode("//Год");
+                                nav = vx.CreateNavigator();
+                                wr.WriteNode(nav, false);
+                                wr.WriteElementString("ИсходящийНомер", isx.ToString(new String('0', 10)));
+                                wr.WriteElementString("ДатаФормирования", dt.ToString("dd.MM.yyyy"));
+                                wr.WriteElementString("Должность", Settings.Default.Dolzh);
+                                wr.WriteElementString("Руководитель", Settings.Default.Ruk);
+                            }
+                            wr.WriteEndElement();
+                            wr.WriteStartElement("ОПИСЬ_ВОЗВРАЩАЕМЫХ_ФАЙЛОВ_ПРИ_ЗАЧИСЛЕНИИ");
+                            {
+                                wr.WriteElementString("КоличествоПередаваемыхФайлов", o.SpisSet.Count.ToString());
+                                foreach (var o1 in o.SpisSet)
+                                {
+                                    wr.WriteStartElement("ПередаваемыйФайл");
+                                    {
+                                        wr.WriteElementString("ТипДокумента", "ОТЧЕТ_О_ЗАЧИСЛЕНИИ_И_НЕ_ЗАЧИСЛЕНИИ_СУММ");
+                                        wr.WriteElementString("ИмяФайла", o1.FileName1);
+                                        wr.WriteElementString("КоличествоПолучателей", o1.Kol.ToString());
+                                        wr.WriteElementString("НомерЧастиМассива", o1.NumPart.ToString());
+                                        wr.WriteElementString("СуммаПоЧастиМассива", o1.Sm.ToString("F2").Replace(',', '.'));
+                                    }
+                                    wr.WriteEndElement();
+                                }
+                            }
+                            wr.WriteEndElement();
+                        }
+                        wr.WriteEndElement();
+                    }
                     wr.WriteEndElement();
-                wr.WriteEndElement();
+                }
                 wr.WriteEndDocument();
             }
             return fname;
