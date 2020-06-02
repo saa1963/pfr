@@ -111,7 +111,7 @@ namespace pfr
                     var OdbUser = ar.Login;
                     var rt = new OracleBd().RegisterDoc(DebAcc: DebAcc, CredAcc: CredAcc, Sum: o.Sm, Dt: f.Dt, User: OdbUser, 
                         Info: String.Format("Переч.пенсии из ПФР за {0} {1}г. [Id-{2}]", Utils.months[o.SpisSet.mec - 1], 
-                        o.SpisSet.god, o.Id), IdTrn: o.Id, isSendtoXXI: !System.Diagnostics.Debugger.IsAttached);
+                        o.SpisSet.god, o.Id), IdTrn: o.Id, isSendtoXXI: !System.Diagnostics.Debugger.IsAttached, TrnNum: itrnnum.Value);
                     if (rt)
                     {
                         o.DFakt = f.Dt;

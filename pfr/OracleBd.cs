@@ -244,7 +244,8 @@ namespace pfr
             }
         }
 
-        public bool RegisterDoc(string DebAcc, string CredAcc, decimal Sum, DateTime Dt, string User, string Info, int IdTrn, bool isSendtoXXI)
+        public bool RegisterDoc(string DebAcc, string CredAcc, decimal Sum, DateTime Dt, string User, 
+            string Info, int IdTrn, bool isSendtoXXI, int TrnNum)
         {
             if (!isSendtoXXI) return true;
             try
@@ -293,6 +294,8 @@ namespace pfr
                         cmd.Parameters.Add("RecipientAcc", OracleDbType.Varchar2, 25, System.Data.ParameterDirection.Input).Value = CredAcc;
                         // Сумма, если документ нац.вал. то это сумма в рублях
                         cmd.Parameters.Add("Summa", OracleDbType.Decimal, System.Data.ParameterDirection.Input).Value = Sum;
+                        // id исходной платежки
+                        cmd.Parameters.Add("iTrnNum", OracleDbType.Int64, System.Data.ParameterDirection.Input).Value = TrnNum;
                         // Дата документа
                         cmd.Parameters.Add("DocDate", OracleDbType.Date, System.Data.ParameterDirection.Input).Value = Dt;
                         // Назначение платежа

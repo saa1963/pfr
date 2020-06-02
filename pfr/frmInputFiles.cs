@@ -98,6 +98,7 @@ namespace pfr
                 foreach (var trnId in opisId.Value)
                 {
                     var o = ctx.TrnSet.Find(trnId);
+                    var iTrnNum = o.SpisSet.ITrnNum.Value;
                     var ar1 = (from ds in ctx.DoSet where ds.Kod == o.DOffice select ds).ToArray();
                     if (ar1.Length > 0)
                     {
@@ -106,7 +107,7 @@ namespace pfr
                         var OdbUser = ar.Login;
                         if (new OracleBd().RegisterDoc(DebAcc: DebAcc, CredAcc: o.Acc, Sum: o.Sm, Dt: o.DateReg.Date, User: OdbUser,
                                     Info: String.Format("Переч.пенсии из ПФР за {0} {1}г. [Id-{2}]", Utils.months[o.SpisSet.mec - 1],
-                                    o.SpisSet.god, o.Id), IdTrn: o.Id, isSendtoXXI: isSendtoXXI))
+                                    o.SpisSet.god, o.Id), IdTrn: o.Id, isSendtoXXI: isSendtoXXI, TrnNum: iTrnNum))
                         {
                             o.DFakt = dt.Date;
                             o.KodZachisl = "З1";
