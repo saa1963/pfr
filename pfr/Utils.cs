@@ -136,5 +136,15 @@ namespace pfr
             }
             return obr;
         }
+
+        public void DeepLogException(NLog.Logger logger,  Exception e)
+        {
+            do
+            {
+                logger.Error(e.Message);
+                e = e.InnerException;
+            }
+            while (e.InnerException != null);
+        }
     }
 }

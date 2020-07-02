@@ -21,16 +21,20 @@ namespace pfr
             Application.SetCompatibleTextRenderingDefault(false);
 
             string Server, Password;
-            if (!System.Diagnostics.Debugger.IsAttached)
-            {
-                Server = "192.168.20.221";
-                Password = "zxc";
-            }
-            else
-            {
-                Server = "127.0.0.1";
-                Password = "1";
-            }
+            Server = "192.168.20.221";
+            Password = "zxc";
+            //Server = "127.0.0.1";
+            //Password = "1";
+            //if (!System.Diagnostics.Debugger.IsAttached)
+            //{
+            //    Server = "192.168.20.221";
+            //    Password = "zxc";
+            //}
+            //else
+            //{
+            //    Server = "127.0.0.1";
+            //    Password = "1";
+            //}
 
             var Database = "pfr";
             var Login = "sa";

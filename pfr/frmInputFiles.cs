@@ -444,7 +444,7 @@ namespace pfr
         }
         public DateTime Dt2
         {
-            get { return Dt1.AddMonths(1).AddDays(-1); }
+            get { return Dt1.AddMonths(1); }
         }
         public int Month { get; set; }
         public int Year { get; set; }
